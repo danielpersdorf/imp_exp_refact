@@ -29,6 +29,14 @@ public class BusinessService {
         for (Partner partner : partners) { System.out.println(partner.id + " " + partner.name); }
     }
 
+    public Boolean addPartner(Partner partner) throws IOException {
+        int nextCode = partners.size() + 1;
+        Partner updatedPartner = new Partner(nextCode , partner.name);
+        partnerAdded = partners.add(updatedPartner);
+        allPartnersSerialized = serializeAllPartners(partners);
+        return partnerAdded & allPartnersSerialized;
+    }
+
     public Boolean addPartner(String name) throws IOException {
         int nextCode = partners.size() + 1;
         Partner partner = new Partner(nextCode , name + " " + nextCode);
