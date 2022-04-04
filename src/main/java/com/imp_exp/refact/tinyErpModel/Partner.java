@@ -6,6 +6,10 @@ public class Partner {
 
     public Partner() {}
 
+    public Partner(String name) {
+        this.name = name;
+    }
+
     public Partner(int id, String name) {
         this.id = id;
         this.name = name;

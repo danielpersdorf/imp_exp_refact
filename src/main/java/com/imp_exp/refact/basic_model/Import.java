@@ -1,21 +1,19 @@
 package com.imp_exp.refact.basic_model;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import com.imp_exp.refact.tinyErpModel.Partner;
 
-import javax.rmi.CORBA.ValueHandler;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+
 
 public class Import {
 
+    private static Partner partner;
     private static BusinessService business = import_export.business;
-
-    private static Boolean partnerAdded = false;
     private static ObjectMapper objectMapper = new ObjectMapper();
+
 
     /**
      * to decide which parts of the ini to read
@@ -134,7 +132,7 @@ public class Import {
         }*/
     }
 
-    public static void doImportsOn(BusinessService business)  {
+    public static void doImports()  {
 
         System.out.println("started import");
 
@@ -142,16 +140,14 @@ public class Import {
 
         switch (objTyp) {
             case "partner":
-                // read config file trigger for imports
-                // supposed to be
-                // importPartnerFrom(file);
+                // if(read config file trigger for imports) { }
                 importPartner("src/main/resources/partner.json");
                 break;
             case "document":
-                importDocumentTo(business);
+                importDocument("src/main/resources/document.json");
                 break;
             case "item":
-                importItemTo(business);
+                importItem("src/main/resources/item.json");
                 break;
             default:
                 System.out.println("No Valid Business Object found");
@@ -162,7 +158,14 @@ public class Import {
 
     private static void importPartner(String filePath) {
 
-        Partner partner = null;
+        // set date and path strings
+        // string archiv = IniFileHelper.ReadValue(Section, ImportVerzeichnisArchiv, FilePath, "");
+        // string fehler = IniFileHelper.ReadValue(Section, ImportVerzeichnisFehler, FilePath, "");
+        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+
+        // wenn es ein Geschäftspartner ist, der importiert werden soll, so muss ein anderes Objekt erzeugt werden.
+        // BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
+        partner = new Partner();
 
         try {
             partner = objectMapper.readValue(new File(filePath), Partner.class);
@@ -171,51 +174,33 @@ public class Import {
         }
 
         try {
-            // partnerAdded = business.addPartner("SerialTestPartner");
-            assert partner != null;
-            partnerAdded = business.addPartner(partner);
+
+            if (business.addPartner(partner)) {
+                System.out.println("partner added");
+                business.showPartners();
+
+                // setzeErfolgVars(psDateiPfad);
+                // setzeErfolgVarsProObjektTyp(oDocLocal);
+                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // benachrichtigeUserBeiErfolg();
+                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+
+                // if (sollInboundPufferGeschriebenWerden)
+                //inboundGeschrieben = insertInbound(oDocLocal);
+
+            } else {
+                // benachrichtigeUserImFehlerfall(psDateiPfad);
+                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
+                // setzeFehlerVars(fehler, Datum);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            // Finally, you should release the Document Object variables
+            partner = null;
         }
-        if (partnerAdded) {
-            System.out.println("partner added");
-            business.showPartners();
-        }
-
-        /*
-        // wenn es ein Geschäftspartner ist, der importiert werden soll, so muss ein anderes Objekt erzeugt werden.
-        BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
-
-        string archiv = IniFileHelper.ReadValue(Section, ImportVerzeichnisArchiv, FilePath, "");
-        string fehler = IniFileHelper.ReadValue(Section, ImportVerzeichnisFehler, FilePath, "");
-        string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
-
-        // hinzufügen zu SBO
-        int iRetCode = oDocLocal.Add();
-
-        if (iRetCode != 0)
-        {
-            benachrichtigeUserImFehlerfall(psDateiPfad);
-            schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
-            setzeFehlerVars(fehler, Datum);
-        }
-        else
-        {
-            setzeErfolgVars(psDateiPfad);
-            setzeErfolgVarsProObjektTyp(oDocLocal);
-            sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-            benachrichtigeUserBeiErfolg();
-            archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-
-            if (sollInboundPufferGeschriebenWerden)
-                inboundGeschrieben = insertInbound(oDocLocal);
-        }
-
-        // Finally, you should release the Document Object variables
-        System.Runtime.InteropServices.Marshal.ReleaseComObject(oDocLocal);
-        oDocLocal = null;*/
     }
 
-    private  static  void importDocumentTo(BusinessService business) { }
-    private  static  void importItemTo(BusinessService business) { }
+    private  static  void importDocument(String filePath) { }
+    private  static  void importItem(String filePath) { }
 }

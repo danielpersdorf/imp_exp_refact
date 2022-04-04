@@ -1,7 +1,10 @@
 package com.imp_exp.refact.basic_model;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
+import com.imp_exp.refact.tinyErpModel.Partner;
 
+import java.io.File;
 import java.io.IOException;
 
 public class import_export {
@@ -60,7 +63,7 @@ public class import_export {
 
             if (ImportIniKeys) {
                 if (FileInDir) {
-                    Import.doImportsOn(business);
+                    Import.doImports();
                 }
             }
 
@@ -171,7 +174,18 @@ public class import_export {
     // business.showPartners();
     // }
 
-    private static void doExport() { System.out.println("started export"); }
+    private static void doExport() {
+        System.out.println("started export");
+        String location = "src/main/resources/partner.xml";
+
+        XmlMapper xmlMapper = new XmlMapper();
+        try {
+            xmlMapper.writeValue(new File(location), new Partner("XML Partner"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File file = new File(location);
+    }
     private static void doUpdate() { System.out.println("started update"); }
     private static void doFillUdt() { System.out.println("started fillUdt"); }
     private static Boolean getProgramStop() { return true; }
