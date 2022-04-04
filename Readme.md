@@ -1,24 +1,27 @@
 ## The Refactoring of import_export 
 
-In this little pet project a piece of legacy code, that i had to work with, is transformed   
-from procedural, over a more object-oriented approach, to a modern way. 
+In this little pet project a piece of legacy code is transformed 
+from total procedural, over a more object-oriented approach, to a modern way. 
 
-import_export is connected to an ERP system.   
-It`s main functions are: 
-* imports business data from xml files into that ERP system  
-* exports business data from ERP to xml files 
-* update business data in ERP via xml files
+import_export connects over the API to an ERP system which stores its data to a database. 
+All the data of the ERP is also serializable to XML format. 
+The main functions of imp_exp are: 
+* import business data from XML files into that ERP system  
+* export business data from ERP to XML files 
+* update business data in ERP via XML files
 
 The original import_export was written in C# and without any UnitTests.
-For demo purposes i have build a model to work with in Java.
+To demonstrate certain aspects of the program I have built a model to work with in Java.
 I started this as a Spring project so all dependencies would already be there when we need them. 
 That`s also why we already have a JUnitTest by default. 
 
-To demonstrate certain aspects of the program i build in a very tiny ERP Model with some behaviours the program works with. 
-Those are used trough almost all models.    
+For demo purposes I build in a very tiny ERP model with some behaviours the program works with. 
+Those are used trough almost all models, and it saves its data as Json files.    
 
 The first simple model shows a sketch of the program in the kind of way we found it. 
-A complete static / procedural program, wrong comments, dead code, HN, global variables, full of duplication on many layers, switch-case bubbles, 
+A complete static, procedural program, wrong comments, dead code, HN, global variables, full of duplication on many layers, switch-case bubbles, 
 no way of concurrency.   
 
-After the first cleaning and following simple rules and principles, we had the next step. 
+After the first cleaning and following simple rules and principles, we had the first step. 
+Many small extracted functions.  
+A sort of readable chunk of code.  
