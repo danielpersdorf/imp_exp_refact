@@ -1,39 +1,45 @@
 package com.imp_exp.refact.basic_model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import com.imp_exp.refact.tinyErpModel.Partner;
 
 import java.io.File;
 import java.io.IOException;
 
-
+/** In Java static classes are not allowed here
+ * */
 public class Import {
 
     private static Partner partner;
     private static BusinessService business = import_export.business;
     private static ObjectMapper objectMapper = new ObjectMapper();
+    // TODO::
+    // in the original this is done natively by the BusinessService itself
+    private static XmlMapper xmlMapper = new XmlMapper();
 
+    private static String objTyp;
+    private static String objNr;
 
     /**
      * to decide which parts of the ini to read
      */
     public static void prepareImport() {
-        /*switch (Program.ObjNr)
-        {
+        switch (import_export.ObjNr) {
             case "2":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Geschäftspartner";
-                ImportTrigger = "ImportGeschaeftspartner";
+                objNr = import_export.ObjNr;
+                objTyp = "partner";
+                /*ImportTrigger = "ImportGeschaeftspartner";
                 ImportVerzeichnis = "ImportGeschaeftspartnerVerzeichnis";
                 ImportVerzeichnisArchiv = "ImportGeschaeftspartnerArchiv";
                 ImportVerzeichnisFehler = "ImportGeschaeftspartnerFehler";
                 sIPF_ObTy = Convert.ToString(2);
-                sIPF_TaNa = "OCRD";
+                sIPF_TaNa = "OCRD";*/
                 break;
 
             case "4":
-                ObjNr = Program.ObjNr;
+                /*ObjNr = Program.ObjNr;
                 ObjBez = "Artikel";
                 ImportTrigger = "ImportArtikel";
                 ImportVerzeichnis = "ImportArtikelVerzeichnis";
@@ -41,9 +47,9 @@ public class Import {
                 ImportVerzeichnisFehler = "ImportArtikelFehler";
                 sIPF_ObTy = Convert.ToString(4);
                 sIPF_TaNa = "OITM";
-                // oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);
+                // oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);*/
                 break;
-
+            /*
             case "13":
                 ObjNr = Program.ObjNr;
                 ObjBez = "Ausgangsrechnung";
@@ -129,32 +135,31 @@ public class Import {
                 sIPF_TaNa = "OPOR";
                 oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
                 break;
-        }*/
+                */
+        }
     }
 
     public static void doImports()  {
 
         System.out.println("started import");
 
-        String objTyp = "partner";
-
-        switch (objTyp) {
-            case "partner":
+        switch (objNr) {
+            //case "partner":
+            case "2":
                 // if(read config file trigger for imports) { }
-                importPartner("src/main/resources/partner.json");
+                // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
+                importPartner("src/main/resources/partner.xml");
                 break;
-            case "document":
-                importDocument("src/main/resources/document.json");
-                break;
-            case "item":
+            //case "item":
+            case "4":
                 importItem("src/main/resources/item.json");
                 break;
+            //case "document":
             default:
-                System.out.println("No Valid Business Object found");
+                importDocument("src/main/resources/document.json");
                 break;
         }
     }
-
 
     private static void importPartner(String filePath) {
 
@@ -167,8 +172,14 @@ public class Import {
         // BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
         partner = new Partner();
 
-        try {
+        /*try {
             partner = objectMapper.readValue(new File(filePath), Partner.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        try {
+            partner = xmlMapper.readValue(new File(filePath), Partner.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

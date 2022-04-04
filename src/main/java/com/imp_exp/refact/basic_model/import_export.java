@@ -1,11 +1,9 @@
 package com.imp_exp.refact.basic_model;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
-import com.imp_exp.refact.tinyErpModel.Partner;
 
-import java.io.File;
 import java.io.IOException;
+
 
 public class import_export {
 
@@ -13,6 +11,9 @@ public class import_export {
     private static Boolean programStop;
 
     public static BusinessService business;
+
+    public static String ObjNr;
+
 
     public static void main(String args[]) {
         componentsInitialised = initComponents();
@@ -36,52 +37,47 @@ public class import_export {
 
     private static void doWork() {
         programStop = false;
-        Boolean ImportIniKeys = true;
-        Boolean FileInDir = true;
+        Boolean importIniKeys = true;
+        Boolean fileInDir = true;
+        Boolean foundJobsOnDB = false;
 
         do {
             // originally like this:
-            /* ----- imports ------------------------------------------------------------------------------------
-            string[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
-            foreach (string x in tmp)
-            {
+            // ----- imports ------------------------------------------------------------------------------------
+            // for every object type in this list
+            // String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
+            String[] tmp = { "2" };
+            for(String x : tmp) {
                 ObjNr = x;
-
                 Import.prepareImport();
-
                 // wenn ImportTrigger = J -> importieren
-                if (IniFileHelper.ReadValue(Import.Section, Import.ImportTrigger, Import.FilePath, "") == "J")
-                {
-                    foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
-                    {
-                        Console.WriteLine(job);
-                        Program.mlogger.logger.Info("Job: " + job);
-                        Import.importDatei(job);
+                // if (IniFileHelper.ReadValue(Import.Section, Import.ImportTrigger, Import.FilePath, "") == "J")
+                if (importIniKeys) {
+                    // foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
+                    if(fileInDir) {
+                        // System.out.println(job);
+                        // logger.Info("Job: " + job);
+                        // Import.importDatei(job);
+                        Import.doImports();
                     }
-                }
-            }*/
-
-            if (ImportIniKeys) {
-                if (FileInDir) {
-                    Import.doImports();
                 }
             }
 
-            doExport();
-            // originally like this:
-            /*  ----- Exports ---------------------------------------------------------------------------------
-            List<Tuple<string, string>> Jobs = DI_API_request.GetJobs(DI_API.connection);
 
-            foreach (var job in Jobs)
-            {
-                switch (job.Item1)
+            // ----- Exports ---------------------------------------------------------------------------------
+            // get jobs from DB via BusinessService
+            // List<Tuple<string, string>> Jobs = DI_API_request.GetJobs(DI_API.connection);
+            // foreach (var job in Jobs)
+            if (foundJobsOnDB) {
+                switch ("job.Item1")
                 {
                     // Table OCRD - Customers (GP) / Primary Key: CardCode / Object Type = 2
                     case "2":
-                        ObjNr = "2";
-                        Export.exportGP(job.Item2);
+                        // ObjNr = "2";
+                        //Export.exportGP(job.Item2);
+                        Export.doExport();
                         break;
-
+                    /*
                     //Table: OITM - Items , Primary Key: ItemCode, Object Type: 4
                     case "4":
                         ObjNr = "4";
@@ -159,7 +155,10 @@ public class import_export {
                         ObjNr = "10000071";
                         Export.exportInventurBuchung(Int32.Parse(job.Item2));
                         break;
-                } */
+                        */
+                    default:
+                }
+            }
 
             doUpdate();
             doFillUdt();
@@ -167,6 +166,7 @@ public class import_export {
         } while (programStop == false);
     }
 
+    /** to import a partner */
     // private static void doImport() {
     // System.out.println("started import");
     // Boolean partnerAdded = business.addPartner("Tony Stark");
@@ -174,7 +174,8 @@ public class import_export {
     // business.showPartners();
     // }
 
-    private static void doExport() {
+    /** to export a partner to xml  */
+    /*private static void doExport() {
         System.out.println("started export");
         String location = "src/main/resources/partner.xml";
 
@@ -185,7 +186,9 @@ public class import_export {
             e.printStackTrace();
         }
         File file = new File(location);
-    }
+        System.out.println("exported partner to " + location);
+    }*/
+
     private static void doUpdate() { System.out.println("started update"); }
     private static void doFillUdt() { System.out.println("started fillUdt"); }
     private static Boolean getProgramStop() { return true; }
