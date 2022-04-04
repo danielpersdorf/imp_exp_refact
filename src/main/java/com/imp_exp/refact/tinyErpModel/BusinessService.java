@@ -1,62 +1,48 @@
 package com.imp_exp.refact.tinyErpModel;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class BusinessService {
 
-    public List<Partner> partners;
-    public List<Document> documents;
-    public List<Item> items;
+    private List<Partner> partners;
+    private List<Document> documents;
+    private List<Item> items;
 
-    public Boolean partnerSerialized;
-    public Boolean allPartnersSerialized;
+    ObjectMapper objectMapper = new ObjectMapper();
 
+    private Boolean partnerAdded;
+    private Boolean allPartnersSerialized;
 
-    public BusinessService() {
-        Partner partner = new Partner(1, "Mr.Spock");
+    public BusinessService() throws IOException {
 
-        partners = new ArrayList<Partner>();
-        partners.add(partner);
-
-        try {
-            partnerSerialized = serializePartner(partner);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            allPartnersSerialized = serializeAllPartners(partners);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        partners = deserializePartners();
 
     }
 
     public void showPartners() {
         for (Partner partner : partners) { System.out.println(partner.id + " " + partner.name); }
     }
-    public Boolean addPartner(String name) {
-        Partner partner = new Partner(2, name);
-        return partners.add(partner);
-    }
 
-    private Boolean serializePartner(Partner partner) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(new File("target/partner.json"), partner);
-        return true;
+    public Boolean addPartner(String name) throws IOException {
+        int nextCode = partners.size() + 1;
+        Partner partner = new Partner(nextCode , name + " " + nextCode);
+        partnerAdded = partners.add(partner);
+        allPartnersSerialized = serializeAllPartners(partners);
+        return partnerAdded & allPartnersSerialized;
     }
 
     private Boolean serializeAllPartners(List<Partner> partners) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(new File("target/allPartners.json"), partners);
+        objectMapper.writeValue(new File("src/main/resources/allPartner.json"), partners);
         return true;
     }
 
+    private List<Partner> deserializePartners() throws IOException {
+        return objectMapper.readValue(new File("src/main/resources/allPartner.json"), new TypeReference<List<Partner>>(){});
+    }
 }

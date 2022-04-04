@@ -2,6 +2,8 @@ package com.imp_exp.refact.basic_model;
 
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 
+import java.io.IOException;
+
 public class import_export {
 
     private static Boolean componentsInitialised;
@@ -20,7 +22,11 @@ public class import_export {
         // init logger
         // init programStop
         // init connection
-        business = new BusinessService();
+        try {
+            business = new BusinessService();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

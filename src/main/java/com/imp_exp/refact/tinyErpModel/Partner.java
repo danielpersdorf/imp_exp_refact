@@ -4,6 +4,8 @@ public class Partner {
     public int id;
     public String name;
 
+    public Partner() {}
+
     public Partner(int id, String name) {
         this.id = id;
         this.name = name;
