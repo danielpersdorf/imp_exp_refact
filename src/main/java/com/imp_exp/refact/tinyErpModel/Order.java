@@ -25,8 +25,8 @@ public class Order implements Document {
     //@JsonCreator
     // public Order(@JsonProperty("partner") Partner partner) {
     public Order( Partner partner) {
-        this.id = BusinessService.documents.size() + 1;
-        //this.id = 0 + 1;
+        // this.id = BusinessService.documents.size() + 1;
+        this.id = 2;
         this.name = "Order";
         this.objType = "17";
         this.partner = partner;
@@ -42,6 +42,8 @@ public class Order implements Document {
         this.partner = partner;
         this.items = new ArrayList<Item>();
     }
+
+    public void setID(int id) { this.id = id; }
 
     public void setPartner(Partner partner) {
         this.partner = partner;

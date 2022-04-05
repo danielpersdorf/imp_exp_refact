@@ -1,6 +1,8 @@
 package com.imp_exp.refact.tinyErpModel;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -9,6 +11,12 @@ import java.util.List;
 
 
 class BusinessServiceTest {
+
+    /*@BeforeEach
+    void BeforeMethod() throws IOException {
+        BusinessService business = new BusinessService();
+    }*/
+
 
     @Test
     void test_initialize_new_BusinessService() throws IOException {
@@ -54,7 +62,9 @@ class BusinessServiceTest {
 
     // partners
     @Test
-    void testShowPartners() {
+    void test_showPartners() throws IOException {
+        BusinessService business = new BusinessService();
+        business.showPartners();
     }
 
     @Test

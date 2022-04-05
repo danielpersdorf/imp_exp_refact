@@ -30,9 +30,13 @@ public class BusinessService {
         System.out.println("Started BusinessService");
 
         partners = deserializePartners();
+        showPartners();
         // items = deserializeItems();
-        documents = deserializeDocuments();
+        // showItems();
+        // documents = deserializeDocuments();
+        // showDocuments();
 
+        documents = new ArrayList<>();
     }
 
     // partners
@@ -63,6 +67,7 @@ public class BusinessService {
     }
 
     public Boolean addDocument(Document document) throws IOException {
+        //document.setID(documents.size() + 1);
         documentAdded = documents.add(document);
         allDocumentsSerialized = serializeAllDocuments(documents);
         return documentAdded & allDocumentsSerialized;
