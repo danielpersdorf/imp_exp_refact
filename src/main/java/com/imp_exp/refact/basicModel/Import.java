@@ -1,9 +1,11 @@
-package com.imp_exp.refact.basic_model;
+package com.imp_exp.refact.basicModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import com.imp_exp.refact.tinyErpModel.Partner;
+import com.imp_exp.refact.tinyErpModel.Document;
+import com.imp_exp.refact.tinyErpModel.Order;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.io.IOException;
 public class Import {
 
     private static Partner partner;
+    private static Document document;
+
     private static BusinessService business = import_export.business;
     private static ObjectMapper objectMapper = new ObjectMapper();
     // TODO::
@@ -39,15 +43,28 @@ public class Import {
                 break;
 
             case "4":
-                /*ObjNr = Program.ObjNr;
-                ObjBez = "Artikel";
-                ImportTrigger = "ImportArtikel";
+                objNr = import_export.ObjNr;
+                objTyp = "item";
+                /* ImportTrigger = "ImportArtikel";
                 ImportVerzeichnis = "ImportArtikelVerzeichnis";
                 ImportVerzeichnisArchiv = "ImportArtikelArchiv";
                 ImportVerzeichnisFehler = "ImportArtikelFehler";
                 sIPF_ObTy = Convert.ToString(4);
-                sIPF_TaNa = "OITM";
+                sIPF_TaNa = "OITM"; */
                 // oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);*/
+                break;
+            case "17":
+                objNr = import_export.ObjNr;
+                objTyp = "Order";
+                // ImportTrigger = "ImportKundenauftrag";
+                // ImportVerzeichnis = "ImportKundenauftragVerzeichnis";
+                // ImportVerzeichnisArchiv = "ImportKundenauftragVerzeichnisArchiv";
+                // ImportVerzeichnisFehler = "ImportKundenauftragVerzeichnisFehler";
+                // sIPF_ObTy = Convert.ToString(17);
+                // sIPF_TaNa = "ORDR";
+                //// oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oOrders);
+                //// nicht mehr aus der static DI_API.connection sondern oCompany Objekt benutzen
+                // oDoc_Type = Program.oCompany.GetBusinessObject(BoObjectTypes.oOrders);
                 break;
             /*
             case "13":
@@ -72,20 +89,6 @@ public class Import {
                 sIPF_ObTy = Convert.ToString(15);
                 sIPF_TaNa = "ODLN";
                 oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
-                break;
-
-            case "17":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Kundenauftrag";
-                ImportTrigger = "ImportKundenauftrag";
-                ImportVerzeichnis = "ImportKundenauftragVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportKundenauftragVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportKundenauftragVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(17);
-                sIPF_TaNa = "ORDR";
-                // oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oOrders);
-                // nicht mehr aus der static DI_API.connection sondern oCompany Objekt benutzen
-                oDoc_Type = Program.oCompany.GetBusinessObject(BoObjectTypes.oOrders);
                 break;
 
             case "18":
@@ -141,22 +144,22 @@ public class Import {
 
     public static void doImports()  {
 
-        System.out.println("started import");
+        System.out.println("import started");
 
         switch (objNr) {
             //case "partner":
             case "2":
-                // if(read config file trigger for imports) { }
                 // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
-                importPartner("src/main/resources/partner.xml");
+                importPartner("src/main/java/com/imp_exp/refact/dataLayer/partner.xml");
                 break;
             //case "item":
             case "4":
-                importItem("src/main/resources/item.json");
+                importItem("src/main/java/com/imp_exp/refact/dataLayer/item.json");
                 break;
             //case "document":
             default:
-                importDocument("src/main/resources/document.json");
+                // importDocument("src/main/resources/document.json");
+                importDocument(new Order(new Partner("Customer")));
                 break;
         }
     }
@@ -212,6 +215,35 @@ public class Import {
         }
     }
 
-    private  static  void importDocument(String filePath) { }
+    // private  static  void importDocument(String filePath) { }
+    private  static  void importDocument(Document document) {
+        try {
+            if (business.addDocument(document)) {
+                System.out.println("document added");
+                business.showDocuments();
+
+                // setzeErfolgVars(psDateiPfad);
+                // setzeErfolgVarsProObjektTyp(oDocLocal);
+                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // benachrichtigeUserBeiErfolg();
+                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+
+                // if (sollInboundPufferGeschriebenWerden)
+                //inboundGeschrieben = insertInbound(oDocLocal);
+
+            } else {
+                // benachrichtigeUserImFehlerfall(psDateiPfad);
+                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
+                // setzeFehlerVars(fehler, Datum);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Finally, you should release the Document Object variables
+            // document = null;
+        }
+    }
+
+
     private  static  void importItem(String filePath) { }
 }

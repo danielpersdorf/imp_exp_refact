@@ -1,4 +1,4 @@
-package com.imp_exp.refact.basic_model;
+package com.imp_exp.refact.basicModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

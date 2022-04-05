@@ -1,4 +1,4 @@
-package com.imp_exp.refact.basic_model;
+package com.imp_exp.refact.basicModel;
 
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 
@@ -16,6 +16,7 @@ public class import_export {
 
 
     public static void main(String args[]) {
+        System.out.println("Started imp_exp ");
         componentsInitialised = initComponents();
         if (componentsInitialised) {
             doWork();
@@ -32,10 +33,14 @@ public class import_export {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("initialized components");
         return true;
     }
 
     private static void doWork() {
+
+        System.out.println("Start working ");
+
         programStop = false;
         Boolean importIniKeys = true;
         Boolean fileInDir = true;
@@ -46,7 +51,7 @@ public class import_export {
             // ----- imports ------------------------------------------------------------------------------------
             // for every object type in this list
             // String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
-            String[] tmp = { "2" };
+            String[] tmp = { "17" };
             for(String x : tmp) {
                 ObjNr = x;
                 Import.prepareImport();
@@ -160,8 +165,8 @@ public class import_export {
                 }
             }
 
-            doUpdate();
-            doFillUdt();
+            // doUpdate();
+            // doFillUdt();
             programStop = getProgramStop();
         } while (programStop == false);
     }
@@ -189,7 +194,7 @@ public class import_export {
         System.out.println("exported partner to " + location);
     }*/
 
-    private static void doUpdate() { System.out.println("started update"); }
-    private static void doFillUdt() { System.out.println("started fillUdt"); }
+    // private static void doUpdate() { System.out.println("started update"); }
+    // private static void doFillUdt() { System.out.println("started fillUdt"); }
     private static Boolean getProgramStop() { return true; }
 }
