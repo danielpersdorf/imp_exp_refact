@@ -8,16 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.CLASS,
-        //use = JsonTypeInfo.Id.NAME,
+        // use = JsonTypeInfo.Id.CLASS,
+        use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        //property = "type")
-        property = "@class",
-        visible = true)
+        property = "type", visible = true)
+        //property = "@class", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Order.class),
-        @JsonSubTypes.Type(value = Delivery.class),
-        @JsonSubTypes.Type(value = Invoice.class)})
+        @JsonSubTypes.Type(value = Order.class, name = "subA"),
+        @JsonSubTypes.Type(value = Delivery.class, name = "subB"),
+        @JsonSubTypes.Type(value = Invoice.class, name = "subC")})
 public abstract class Document {
 
     public int id;
@@ -39,6 +38,16 @@ public abstract class Document {
     public void setPositions(List<Item> items) {
         //this.items = items;
     }
+
+//    @Override
+//    public String toString() {
+//        return "Document{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", objType='" + objType + '\'' +
+//                ", partner=" + partner +
+//                '}';
+//    }
 }
 
 class Invoice extends Document {
