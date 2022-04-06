@@ -12,11 +12,10 @@ import java.util.List;
 //        include = JsonTypeInfo.As.PROPERTY,
 //        property = "@class",
 //        visible = true)
+// @JsonSubTypes({@JsonSubTypes.Type(value = Order.class, name = "subA")})
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type",
-        visible = true)
-@JsonSubTypes({@JsonSubTypes.Type(value = Order.class, name = "subA")})
+        property = "type")
 public class Order extends Document {
 
     public int id;
@@ -59,9 +58,9 @@ public class Order extends Document {
         // this.items = new ArrayList<Item>();
     }
 
-    // @JsonCreator
-    // public Order(@JsonProperty("id") int id, @JsonProperty("name") String name, @JsonProperty("objType") String objType, @JsonProperty("partner") Partner partner) {
-    public Order(int id, String name, String objType, Partner partner) {
+    @JsonCreator
+    public Order(@JsonProperty("id") int id, @JsonProperty("name") String name, @JsonProperty("objType") String objType, @JsonProperty("partner") Partner partner) {
+    // public Order(int id, String name, String objType, Partner partner) {
         super(id, "Order", "17", partner);
         this.id = id;
         this.name = "Order";

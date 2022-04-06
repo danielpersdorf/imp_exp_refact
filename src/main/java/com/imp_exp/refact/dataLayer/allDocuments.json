@@ -1,9 +1,30 @@
-[ {
-  "id" : 2,
-  "name" : "Order",
-  "objType" : "17",
-  "partner" : {
-    "id" : 0,
-    "name" : "Customer 0"
-  }
-} ]
+{
+  "documents" : [ {
+    "type" : "ORDER",
+    "id" : 1,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 0,
+      "name" : "Customer 1"
+    }
+  }, {
+    "type" : "ORDER",
+    "id" : 2,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 0,
+      "name" : "Customer 2"
+    }
+  }, {
+    "type" : "ORDER",
+    "id" : 3,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 0,
+      "name" : "Customer 3"
+    }
+  } ]
+}

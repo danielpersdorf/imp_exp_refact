@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.imp_exp.refact.smallXmpls.BaseClass;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 public class BusinessService {
@@ -20,6 +22,9 @@ public class BusinessService {
     public List<Document> documents;
 
     ObjectMapper objectMapper = new ObjectMapper();
+
+    // extra marshaller
+    DocumentMarshaller marshaller = new DocumentMarshaller();
 
     private Boolean partnerAdded;
     private Boolean allPartnersSerialized;
@@ -36,14 +41,13 @@ public class BusinessService {
 
         partners = deserializePartners();
         showPartners();
+
         items = deserializeItems();
         showItems();
 
-        documents = new ArrayList<>();
-        // documents = deserializeDocuments();
-        // showDocuments();
-
-
+        marshaller = deserializeDocuments();
+        documents = marshaller.documents;
+        showDocuments();
     }
 
     // partners
@@ -101,20 +105,32 @@ public class BusinessService {
     public Boolean addDocument(Document document) throws IOException {
         // int nextCode = documents.size() + 1;
         documentAdded = documents.add(document);
-        allDocumentsSerialized = serializeAllDocuments(documents);
+        marshaller.documents = documents;
+        allDocumentsSerialized = serializeAllDocuments(marshaller);
         return documentAdded & allDocumentsSerialized;
     }
 
-    public Boolean serializeAllDocuments(List<Document> documents) throws IOException {
-        // objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS , false);
+    public Boolean serializeAllDocuments(DocumentMarshaller marshaller) throws IOException {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), documents);
+        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), marshaller);
         return true;
     }
 
-    public List<Document> deserializeDocuments() throws IOException {
+    public DocumentMarshaller deserializeDocuments() throws IOException {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), new TypeReference<List<Document>>(){});
+        // return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), new TypeReference<ArrayList<Document>>(){});
+        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), DocumentMarshaller.class);
     }
 
+}
+
+
+class DocumentMarshaller {
+    public List<Document> documents;
+    public DocumentMarshaller() {
+        this.documents = new ArrayList<Document>();
+    }
+    public DocumentMarshaller(List list) {
+        this.documents = list;
+    }
 }

@@ -1,0 +1,11 @@
+{
+  "list" : [ {
+    "@class" : "com.imp_exp.refact.smallXmpls.SubClassA",
+    "id" : 1,
+    "name" : "Order"
+  }, {
+    "@class" : "com.imp_exp.refact.smallXmpls.SubClassB",
+    "id" : 2,
+    "name" : "Delivery"
+  } ]
+}

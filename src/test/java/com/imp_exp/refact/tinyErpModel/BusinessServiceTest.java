@@ -1,10 +1,14 @@
 package com.imp_exp.refact.tinyErpModel;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +101,7 @@ class BusinessServiceTest {
         business.showItems();
     }
 
+
     // docs
     @Test
     void test_showDocuments() throws IOException {
@@ -108,13 +113,13 @@ class BusinessServiceTest {
     void test_addDocument() {
     }
 
-    @Test
+    /*@Test
     void test_serializeAllDocuments() throws IOException {
         BusinessService business = new BusinessService();
         business.serializeAllDocuments(business.documents);
-    }
+    }*/
 
-    @Test
+    /*@Test
     void test_deserializeDocuments() throws IOException {
         BusinessService business = new BusinessService();
         business.documents = business.deserializeDocuments();
@@ -133,27 +138,73 @@ class BusinessServiceTest {
         //                        "name" : "Customer 0"
         //            }
         //        } ]
-    }
+    }*/
 
+    // test with marshaller
     @Test
     void test_createFirstDocumentEntriesInDB_withoutItems() throws IOException {
         // let`s create the first entries in DB (json)
         // init business
         BusinessService business = new BusinessService();
         // create a partner
-        Partner partner = new Partner("Customer 0");
+        Partner partner = new Partner("Customer 3");
         // create a document (order)
-        Document document = new Order(2, partner);
-
-        // create the list of docs
-        business.documents = new ArrayList<Document>();
-
+        Document document = new Order(3, partner);
         // add the doc to documents
         business.addDocument(document);
         business.showDocuments();
     }
 
+    @Test
+    void test_serializeAList_withMarshaller() throws IOException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+        //ClientClass clientClass = new ClientClass();
+        DocumentMarshaller marshaller = new DocumentMarshaller();
+
+        // create new partner
+        Partner partner = new Partner("Customer 0");
+
+        Document doc1 = new Order(1, partner);
+        //Document doc2 = new Delivery(2, "Delivery");
+
+        marshaller.documents.add(doc1);
+        //clientClass.list.add(class2);
+
+        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), marshaller);
+    }
+
+    @Test
+    void test_deserializeAList_withMarshaller() throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        BusinessService business = new BusinessService();
+        business.marshaller = objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), DocumentMarshaller.class);
+
+        business.documents = business.marshaller.documents;
+
+        business.showDocuments();
+    }
+
+    // new serializing via marshaller
+    @Test
+    void test_serializeAllDocuments() throws IOException {
+        BusinessService business = new BusinessService();
+        business.serializeAllDocuments(business.marshaller);
+    }
+
+    @Test
+    void test_deserializeDocuments() throws IOException {
+        BusinessService business = new BusinessService();
+        business.marshaller = business.deserializeDocuments();
+        business.documents = business.marshaller.documents;
+        business.showDocuments();
+    }
+
+    // now with items on documents
     @Test
     void test_createFirstDocumentEntriesInDB() throws IOException {
         // let`s create the first entries in DB (json)

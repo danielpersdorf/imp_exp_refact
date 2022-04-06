@@ -1,6 +1,5 @@
 package com.imp_exp.refact.tinyErpModel;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -11,12 +10,11 @@ import java.util.List;
         // use = JsonTypeInfo.Id.CLASS,
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type", visible = true)
-        //property = "@class", visible = true)
+        property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Order.class, name = "subA"),
-        @JsonSubTypes.Type(value = Delivery.class, name = "subB"),
-        @JsonSubTypes.Type(value = Invoice.class, name = "subC")})
+        @JsonSubTypes.Type(value = Order.class, name = "ORDER"),
+        @JsonSubTypes.Type(value = Delivery.class, name = "DELIVERY"),
+        @JsonSubTypes.Type(value = Invoice.class, name = "INVOICE")})
 public abstract class Document {
 
     public int id;
@@ -38,16 +36,6 @@ public abstract class Document {
     public void setPositions(List<Item> items) {
         //this.items = items;
     }
-
-//    @Override
-//    public String toString() {
-//        return "Document{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", objType='" + objType + '\'' +
-//                ", partner=" + partner +
-//                '}';
-//    }
 }
 
 class Invoice extends Document {

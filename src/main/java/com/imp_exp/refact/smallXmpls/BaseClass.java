@@ -22,14 +22,18 @@ public abstract class BaseClass {
     }
 }
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "@class")
 class SubClassA extends BaseClass {
     @JsonCreator
     public SubClassA(@JsonProperty("id")int id, @JsonProperty("name")String name) {
         super(id, name);
     }
 }
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "@class")
 class SubClassB extends BaseClass {
     @JsonCreator
     public SubClassB(@JsonProperty("id")int id, @JsonProperty("name")String name) {

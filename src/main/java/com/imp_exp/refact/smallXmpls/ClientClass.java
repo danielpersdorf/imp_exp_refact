@@ -5,10 +5,10 @@ import java.util.List;
 
 public class ClientClass {
 
-    public List list;
+    public List<BaseClass> list;
 
     public ClientClass() {
-        this.list = new ArrayList();
+        this.list = new ArrayList<BaseClass>();
     }
 
     public ClientClass(List list) {
