@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,14 +14,18 @@ import java.util.List;
 
 public class BusinessService {
 
-    private List<Partner> partners;
-    private List<Item> items;
-    public static List<Document> documents;
+
+    public List<Partner> partners;
+    public List<Item> items;
+    public List<Document> documents;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     private Boolean partnerAdded;
     private Boolean allPartnersSerialized;
+
+    private Boolean itemAdded;
+    private Boolean allItemsSerialized;
 
     private Boolean documentAdded;
     private Boolean allDocumentsSerialized;
@@ -31,8 +36,8 @@ public class BusinessService {
 
         partners = deserializePartners();
         showPartners();
-        // items = deserializeItems();
-        // showItems();
+        items = deserializeItems();
+        showItems();
         // documents = deserializeDocuments();
         // showDocuments();
 
@@ -53,6 +58,7 @@ public class BusinessService {
     }
 
     public Boolean serializeAllPartners(List<Partner> partners) throws IOException {
+        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allPartner.json"), partners);
         return true;
     }
@@ -61,13 +67,36 @@ public class BusinessService {
         return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allPartner.json"), new TypeReference<List<Partner>>(){});
     }
 
+    // items
+    public void showItems() {
+        for (Item item : items) { System.out.println(item.toString());}
+    }
+
+    public Boolean addItem(Item item) throws IOException {
+        //document.setID(documents.size() + 1);
+        itemAdded = items.add(item);
+        allItemsSerialized = serializeAllItems(items);
+        return itemAdded & allItemsSerialized;
+    }
+
+    public Boolean serializeAllItems(List<Item> items) throws IOException {
+        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allItems.json"), items);
+        return true;
+    }
+
+    public List<Item> deserializeItems() throws IOException {
+        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allItems.json"), new TypeReference<List<Item>>(){});
+    }
+
+
     // documents
     public void showDocuments() {
-        for (Document document : documents) { System.out.println(document.toString());}
+        for (Document document : documents) { System.out.println(document.toString()); }
     }
 
     public Boolean addDocument(Document document) throws IOException {
-        //document.setID(documents.size() + 1);
+        // int nextCode = documents.size() + 1;
         documentAdded = documents.add(document);
         allDocumentsSerialized = serializeAllDocuments(documents);
         return documentAdded & allDocumentsSerialized;
@@ -75,6 +104,7 @@ public class BusinessService {
 
     public Boolean serializeAllDocuments(List<Document> documents) throws IOException {
         // objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS , false);
+        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), documents);
         return true;
     }
