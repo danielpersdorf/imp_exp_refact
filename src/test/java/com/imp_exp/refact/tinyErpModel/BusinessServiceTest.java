@@ -142,20 +142,6 @@ class BusinessServiceTest {
 
     // test with marshaller
     @Test
-    void test_createFirstDocumentEntriesInDB_withoutItems() throws IOException {
-        // let`s create the first entries in DB (json)
-        // init business
-        BusinessService business = new BusinessService();
-        // create a partner
-        Partner partner = new Partner("Customer 3");
-        // create a document (order)
-        Document document = new Order(3, partner);
-        // add the doc to documents
-        business.addDocument(document);
-        business.showDocuments();
-    }
-
-    @Test
     void test_serializeAList_withMarshaller() throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -178,14 +164,10 @@ class BusinessServiceTest {
 
     @Test
     void test_deserializeAList_withMarshaller() throws IOException {
-
         ObjectMapper objectMapper = new ObjectMapper();
-
         BusinessService business = new BusinessService();
         business.marshaller = objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), DocumentMarshaller.class);
-
         business.documents = business.marshaller.documents;
-
         business.showDocuments();
     }
 
@@ -203,6 +185,21 @@ class BusinessServiceTest {
         business.documents = business.marshaller.documents;
         business.showDocuments();
     }
+
+    @Test
+    void test_createFirstDocumentEntriesInDB_withoutItems() throws IOException {
+        // let`s create the first entries in DB (json)
+        // init business
+        BusinessService business = new BusinessService();
+        // create a partner
+        Partner partner = new Partner("Customer 3");
+        // create a document (order)
+        Document document = new Order(3, partner);
+        // add the doc to documents
+        business.addDocument(document);
+        business.showDocuments();
+    }
+
 
     // now with items on documents
     @Test

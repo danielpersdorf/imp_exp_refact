@@ -51,7 +51,7 @@ public class import_export {
             // ----- imports ------------------------------------------------------------------------------------
             // for every object type in this list
             // String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
-            String[] tmp = { "17" };
+            String[] tmp = { "4" };
             for(String x : tmp) {
                 ObjNr = x;
                 Import.prepareImport();
@@ -80,7 +80,7 @@ public class import_export {
                     case "2":
                         // ObjNr = "2";
                         //Export.exportGP(job.Item2);
-                        Export.doExport();
+                        // Export.doExport();
                         break;
                     /*
                     //Table: OITM - Items , Primary Key: ItemCode, Object Type: 4

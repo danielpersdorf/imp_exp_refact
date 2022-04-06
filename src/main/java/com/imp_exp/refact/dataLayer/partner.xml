@@ -1,1 +1,4 @@
-<Partner><id>0</id><name>XML Partner</name></Partner>
+<Partner>
+  <id>0</id>
+  <name>XML Partner</name>
+</Partner>

@@ -2,10 +2,7 @@ package com.imp_exp.refact.basicModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.imp_exp.refact.tinyErpModel.BusinessService;
-import com.imp_exp.refact.tinyErpModel.Partner;
-import com.imp_exp.refact.tinyErpModel.Document;
-import com.imp_exp.refact.tinyErpModel.Order;
+import com.imp_exp.refact.tinyErpModel.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,12 +151,13 @@ public class Import {
                 break;
             //case "item":
             case "4":
-                importItem("src/main/java/com/imp_exp/refact/dataLayer/item.json");
+                importItem("src/main/java/com/imp_exp/refact/dataLayer/item.xml");
                 break;
             //case "document":
             default:
                 // importDocument("src/main/resources/document.json");
-                importDocument(new Order(new Partner("Customer")));
+                // importDocument(new Order(new Partner("Customer")));
+                importDocument("src/main/java/com/imp_exp/refact/dataLayer/document.xml");
                 break;
         }
     }
@@ -216,7 +214,17 @@ public class Import {
     }
 
     // private  static  void importDocument(String filePath) { }
-    private  static  void importDocument(Document document) {
+    private  static  void importDocument(String filePath) {
+
+        partner = new Partner("xml partner");
+        document = new Order(partner);
+
+        try {
+            document = xmlMapper.readValue(new File(filePath), Document.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             if (business.addDocument(document)) {
                 System.out.println("document added");
@@ -245,5 +253,28 @@ public class Import {
     }
 
 
-    private  static  void importItem(String filePath) { }
+    private  static  void importItem(String filePath) {
+        Item item = new Item();
+
+        try {
+            item = xmlMapper.readValue(new File(filePath), Item.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (business.addItem(item)) {
+                System.out.println("item added");
+                business.showItems();
+
+            } else {
+                // benachrichtigeUserImFehlerfall(psDateiPfad);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Finally, you should release the Document Object variables
+            item = null;
+        }
+    }
 }

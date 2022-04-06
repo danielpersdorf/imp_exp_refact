@@ -35,7 +35,9 @@ public class BusinessService {
     private Boolean documentAdded;
     private Boolean allDocumentsSerialized;
 
+
     public BusinessService() throws IOException {
+
 
         System.out.println("Started BusinessService");
 
