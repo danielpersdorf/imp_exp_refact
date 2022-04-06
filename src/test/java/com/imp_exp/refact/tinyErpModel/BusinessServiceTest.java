@@ -122,6 +122,17 @@ class BusinessServiceTest {
 
         // works with this string
         // [{"@class":"com.imp_exp.refact.tinyErpModel.Order","name":"Order","objType":"17","partner":{"id":0,"name":"Customer 0"},"items":[{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":0,"name":"Test Item 0"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":1,"name":"Test Item 1"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":2,"name":"Test Item 2"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":3,"name":"Test Item 3"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":4,"name":"Test Item 4"}],"id":0}]
+        // or this one without items
+//        [ {
+//            "@class":"com.imp_exp.refact.tinyErpModel.Order",
+//                    "id" : 2,
+//                    "name" : "Order",
+//                    "objType" : "17",
+//                    "partner" : {
+//                "id" : 0,
+//                        "name" : "Customer 0"
+//            }
+//        } ]
     }
 
     @Test

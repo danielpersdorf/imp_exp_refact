@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,10 +37,12 @@ public class BusinessService {
         showPartners();
         items = deserializeItems();
         showItems();
+
+        documents = new ArrayList<>();
         // documents = deserializeDocuments();
         // showDocuments();
 
-        documents = new ArrayList<>();
+
     }
 
     // partners
@@ -66,6 +67,7 @@ public class BusinessService {
     public List<Partner> deserializePartners() throws IOException {
         return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allPartner.json"), new TypeReference<List<Partner>>(){});
     }
+
 
     // items
     public void showItems() {

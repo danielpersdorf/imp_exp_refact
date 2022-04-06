@@ -1,4 +1,5 @@
 [ {
+  "@class":"com.imp_exp.refact.tinyErpModel.Order",
   "id" : 2,
   "name" : "Order",
   "objType" : "17",
