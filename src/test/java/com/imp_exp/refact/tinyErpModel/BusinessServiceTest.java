@@ -1,14 +1,9 @@
 package com.imp_exp.refact.tinyErpModel;
 
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +17,6 @@ class BusinessServiceTest {
         assertNotNull(business);
     }
 
-
-    // partners
     @Test
     void test_showPartners() throws IOException {
         BusinessService business = new BusinessService();
@@ -31,44 +24,8 @@ class BusinessServiceTest {
     }
 
     @Test
-    void test_addPartner() {
-    }
-
-    @Test
-    void test_serializeAllPartners() throws IOException {
-        BusinessService business = new BusinessService();
-        business.serializeAllPartners(business.partners);
-    }
-
-    @Test
-    void test_deserializePartners() throws IOException {
-        BusinessService business = new BusinessService();
-        business.partners = business.deserializePartners();
-        business.showPartners();
-    }
-
-
-    // items
-    @Test
     void test_showItems() throws IOException {
         BusinessService business = new BusinessService();
-        business.showItems();
-    }
-
-    @Test
-    void test_addItems() {
-    }
-
-    @Test
-    void test_serializeAllItems() throws IOException {
-        BusinessService business = new BusinessService();
-        business.serializeAllItems(business.items);
-    }
-
-    @Test
-    void test_deserializeItems() throws IOException {
-        BusinessService business = new BusinessService();
-        business.items = business.deserializeItems();
         business.showItems();
     }
 
@@ -96,93 +53,15 @@ class BusinessServiceTest {
         business.items = newItems;
 
         // serialize data
-        business.serializeAllItems(business.items);
+        business.serializer.serializeAllItems(business.items);
 
         business.showItems();
     }
 
 
-    // docs
     @Test
     void test_showDocuments() throws IOException {
         BusinessService business = new BusinessService();
-        business.showDocuments();
-    }
-
-    @Test
-    void test_addDocument() {
-    }
-
-    /*@Test
-    void test_serializeAllDocuments() throws IOException {
-        BusinessService business = new BusinessService();
-        business.serializeAllDocuments(business.documents);
-    }*/
-
-    /*@Test
-    void test_deserializeDocuments() throws IOException {
-        BusinessService business = new BusinessService();
-        business.documents = business.deserializeDocuments();
-        business.showDocuments();
-
-        // works with this string
-        // [{"@class":"com.imp_exp.refact.tinyErpModel.Order","name":"Order","objType":"17","partner":{"id":0,"name":"Customer 0"},"items":[{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":0,"name":"Test Item 0"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":1,"name":"Test Item 1"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":2,"name":"Test Item 2"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":3,"name":"Test Item 3"},{"@class":"com.imp_exp.refact.tinyErpModel.Item","id":4,"name":"Test Item 4"}],"id":0}]
-        // or this one without items
-        //        [ {
-        //            "@class":"com.imp_exp.refact.tinyErpModel.Order",
-        //                    "id" : 2,
-        //                    "name" : "Order",
-        //                    "objType" : "17",
-        //                    "partner" : {
-        //                "id" : 0,
-        //                        "name" : "Customer 0"
-        //            }
-        //        } ]
-    }*/
-
-    // test with marshaller
-    @Test
-    void test_serializeAList_withMarshaller() throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-        //ClientClass clientClass = new ClientClass();
-        DocumentMarshaller marshaller = new DocumentMarshaller();
-
-        // create new partner
-        Partner partner = new Partner("Customer 0");
-
-        Document doc1 = new Order(1, partner);
-        //Document doc2 = new Delivery(2, "Delivery");
-
-        marshaller.documents.add(doc1);
-        //clientClass.list.add(class2);
-
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), marshaller);
-    }
-
-    @Test
-    void test_deserializeAList_withMarshaller() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        BusinessService business = new BusinessService();
-        business.marshaller = objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), DocumentMarshaller.class);
-        business.documents = business.marshaller.documents;
-        business.showDocuments();
-    }
-
-    // new serializing via marshaller
-    @Test
-    void test_serializeAllDocuments() throws IOException {
-        BusinessService business = new BusinessService();
-        business.serializeAllDocuments(business.marshaller);
-    }
-
-    @Test
-    void test_deserializeDocuments() throws IOException {
-        BusinessService business = new BusinessService();
-        business.marshaller = business.deserializeDocuments();
-        business.documents = business.marshaller.documents;
         business.showDocuments();
     }
 

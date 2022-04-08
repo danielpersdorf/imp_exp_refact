@@ -4,24 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.imp_exp.refact.tinyErpModel.*;
 
-import java.io.File;
+
 import java.io.IOException;
 
 /** In Java static classes are not allowed here
  * */
 public class Import {
 
-    private static Partner partner;
-    private static Document document;
+    public static String objTyp;
+    public static String objNr;
 
     private static BusinessService business = import_export.business;
-    private static ObjectMapper objectMapper = new ObjectMapper();
-    // TODO::
-    // in the original this is done natively by the BusinessService itself
-    private static XmlMapper xmlMapper = new XmlMapper();
-
-    private static String objTyp;
-    private static String objNr;
 
     /**
      * to decide which parts of the ini to read
@@ -147,17 +140,15 @@ public class Import {
             //case "partner":
             case "2":
                 // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
-                importPartner("src/main/java/com/imp_exp/refact/dataLayer/partner.xml");
+                importPartner("src/main/java/com/imp_exp/refact/externalData/partner.xml");
                 break;
             //case "item":
             case "4":
-                importItem("src/main/java/com/imp_exp/refact/dataLayer/item.xml");
+                importItem("src/main/java/com/imp_exp/refact/externalData/item.xml");
                 break;
             //case "document":
             default:
-                // importDocument("src/main/resources/document.json");
-                // importDocument(new Order(new Partner("Customer")));
-                importDocument("src/main/java/com/imp_exp/refact/dataLayer/document.xml");
+                importDocument("src/main/java/com/imp_exp/refact/externalData/document.xml");
                 break;
         }
     }
@@ -171,23 +162,10 @@ public class Import {
 
         // wenn es ein Geschäftspartner ist, der importiert werden soll, so muss ein anderes Objekt erzeugt werden.
         // BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
-        partner = new Partner();
-
-        /*try {
-            partner = objectMapper.readValue(new File(filePath), Partner.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-            partner = xmlMapper.readValue(new File(filePath), Partner.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         try {
 
-            if (business.addPartner(partner)) {
+            if (business.importPartner(filePath)) {
                 System.out.println("partner added");
                 business.showPartners();
 
@@ -209,24 +187,14 @@ public class Import {
             e.printStackTrace();
         } finally {
             // Finally, you should release the Document Object variables
-            partner = null;
+            // partner = null;
         }
     }
 
-    // private  static  void importDocument(String filePath) { }
     private  static  void importDocument(String filePath) {
 
-        partner = new Partner("xml partner");
-        document = new Order(partner);
-
         try {
-            document = xmlMapper.readValue(new File(filePath), Document.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (business.addDocument(document)) {
+            if (business.importDocument(filePath)) {
                 System.out.println("document added");
                 business.showDocuments();
 
@@ -254,16 +222,9 @@ public class Import {
 
 
     private  static  void importItem(String filePath) {
-        Item item = new Item();
 
         try {
-            item = xmlMapper.readValue(new File(filePath), Item.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (business.addItem(item)) {
+            if (business.importItem(filePath)) {
                 System.out.println("item added");
                 business.showItems();
 
@@ -274,7 +235,7 @@ public class Import {
             e.printStackTrace();
         } finally {
             // Finally, you should release the Document Object variables
-            item = null;
+            // item = null;
         }
     }
 }

@@ -3,7 +3,6 @@ package com.imp_exp.refact.tinyErpModel;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @JsonTypeInfo(
@@ -31,7 +30,9 @@ public abstract class Document {
         // this.items = items;
     }
 
-    public void setID(int i) {};
+    public void setID(int id) {
+        this.id = id;
+    };
 
     public void setPositions(List<Item> items) {
         //this.items = items;

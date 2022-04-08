@@ -1,30 +1,18 @@
 package com.imp_exp.refact.tinyErpModel;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.imp_exp.refact.smallXmpls.BaseClass;
-
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class BusinessService {
 
-
     public List<Partner> partners;
     public List<Item> items;
     public List<Document> documents;
+    DocumentWrapper wrapper;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    // extra marshaller
-    DocumentMarshaller marshaller = new DocumentMarshaller();
+    JsonSerializer serializer = new JsonSerializer();
+    XmlSerializer xmlSerializer = new XmlSerializer();
 
     private Boolean partnerAdded;
     private Boolean allPartnersSerialized;
@@ -38,101 +26,86 @@ public class BusinessService {
 
     public BusinessService() throws IOException {
 
-
         System.out.println("Started BusinessService");
 
-        partners = deserializePartners();
+        partners = serializer.deserializePartners();
         showPartners();
 
-        items = deserializeItems();
+        items = serializer.deserializeItems();
         showItems();
 
-        marshaller = deserializeDocuments();
-        documents = marshaller.documents;
+        wrapper = serializer.deserializeDocuments();
+        documents = wrapper.documents;
         showDocuments();
     }
 
-    // partners
+
     public void showPartners() {
         for (Partner partner : partners) { System.out.println(partner.id + " " + partner.name); }
     }
+
+    public void showItems() {
+        for (Item item : items) { System.out.println(item.toString());}
+    }
+
+    public void showDocuments() {
+        for (Document document : documents) { System.out.println(document.toString()); }
+    }
+
 
     public Boolean addPartner(Partner partner) throws IOException {
         int nextCode = partners.size() + 1;
         Partner updatedPartner = new Partner(nextCode , partner.name);
         partnerAdded = partners.add(updatedPartner);
-        allPartnersSerialized = serializeAllPartners(partners);
+        allPartnersSerialized = serializer.serializeAllPartners(partners);
         return partnerAdded & allPartnersSerialized;
     }
 
-    public Boolean serializeAllPartners(List<Partner> partners) throws IOException {
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allPartner.json"), partners);
-        return true;
-    }
-
-    public List<Partner> deserializePartners() throws IOException {
-        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allPartner.json"), new TypeReference<List<Partner>>(){});
-    }
-
-
-    // items
-    public void showItems() {
-        for (Item item : items) { System.out.println(item.toString());}
-    }
-
     public Boolean addItem(Item item) throws IOException {
-        //document.setID(documents.size() + 1);
+        item.id = documents.size() + 1;
         itemAdded = items.add(item);
-        allItemsSerialized = serializeAllItems(items);
+        allItemsSerialized = serializer.serializeAllItems(items);
         return itemAdded & allItemsSerialized;
     }
 
-    public Boolean serializeAllItems(List<Item> items) throws IOException {
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allItems.json"), items);
-        return true;
-    }
-
-    public List<Item> deserializeItems() throws IOException {
-        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allItems.json"), new TypeReference<List<Item>>(){});
-    }
-
-
-    // documents
-    public void showDocuments() {
-        for (Document document : documents) { System.out.println(document.toString()); }
-    }
-
     public Boolean addDocument(Document document) throws IOException {
-        // int nextCode = documents.size() + 1;
+        document.id = documents.size() + 1;
         documentAdded = documents.add(document);
-        marshaller.documents = documents;
-        allDocumentsSerialized = serializeAllDocuments(marshaller);
+        wrapper.documents = documents;
+        allDocumentsSerialized = serializer.serializeAllDocuments(wrapper);
         return documentAdded & allDocumentsSerialized;
     }
 
-    public Boolean serializeAllDocuments(DocumentMarshaller marshaller) throws IOException {
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), marshaller);
+    public Boolean exportPartner(int id, String location) throws IOException {
+        Partner partner = partners.get(id - 1);
+        xmlSerializer.serializePartner(partner, location);
         return true;
     }
 
-    public DocumentMarshaller deserializeDocuments() throws IOException {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), new TypeReference<ArrayList<Document>>(){});
-        return objectMapper.readValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), DocumentMarshaller.class);
+    public Boolean exportItem(int id, String location) throws IOException {
+        Item item = items.get(id);
+        xmlSerializer.serializeItem(item, location);
+        return true;
     }
 
+    public Boolean exportDocument(int id, String location) throws IOException {
+        Document document = documents.get(id);
+        xmlSerializer.serializeDocument(document, location);
+        return true;
+    }
+
+    public Boolean importPartner(String filePath) throws IOException {
+        Partner partner = xmlSerializer.deserializePartner(filePath);
+        return addPartner(partner);
+    }
+    public Boolean importItem(String filePath) throws IOException {
+        Item item = xmlSerializer.deserializeItem(filePath);
+        return addItem(item);
+    }
+    public Boolean importDocument(String filePath) throws IOException {
+        Document document = xmlSerializer.deserializeDocument(filePath);
+        return addDocument(document);
+    }
 }
 
 
-class DocumentMarshaller {
-    public List<Document> documents;
-    public DocumentMarshaller() {
-        this.documents = new ArrayList<Document>();
-    }
-    public DocumentMarshaller(List list) {
-        this.documents = list;
-    }
-}
