@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
 
 @JsonTypeInfo(
-        // use = JsonTypeInfo.Id.CLASS,
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")

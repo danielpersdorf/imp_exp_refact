@@ -1,13 +1,10 @@
 package com.imp_exp.refact.tinyErpModel;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 
 public class XmlSerializer {

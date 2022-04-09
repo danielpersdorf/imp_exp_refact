@@ -2,17 +2,11 @@ package com.imp_exp.refact.tinyErpModel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
-//@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
-//        include = JsonTypeInfo.As.PROPERTY,
-//        property = "@class",
-//        visible = true)
-// @JsonSubTypes({@JsonSubTypes.Type(value = Order.class, name = "subA")})
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
@@ -25,7 +19,6 @@ public class Order extends Document {
     // public List<Item> items;
 
 
-    // @JsonCreator
     public Order() {
         super( 0, "Order", "17", new Partner());
         // this.id = BusinessService.documents.size() + 1;
@@ -48,7 +41,7 @@ public class Order extends Document {
 
     //@JsonCreator
     //public Order(@JsonProperty("id") int id, @JsonProperty("partner") Partner partner) {
-        public Order(int id,  Partner partner) {
+    public Order(int id,  Partner partner) {
         super(id, "Order", "17", partner);
         // this.id = BusinessService.documents.size() + 1;
         this.id = id;

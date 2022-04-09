@@ -9,8 +9,8 @@ public class BusinessService {
     public List<Partner> partners;
     public List<Item> items;
     public List<Document> documents;
-    DocumentWrapper wrapper;
 
+    DocumentWrapper wrapper;
     JsonSerializer serializer = new JsonSerializer();
     XmlSerializer xmlSerializer = new XmlSerializer();
 
@@ -60,14 +60,12 @@ public class BusinessService {
         allPartnersSerialized = serializer.serializeAllPartners(partners);
         return partnerAdded & allPartnersSerialized;
     }
-
     public Boolean addItem(Item item) throws IOException {
         item.id = documents.size() + 1;
         itemAdded = items.add(item);
         allItemsSerialized = serializer.serializeAllItems(items);
         return itemAdded & allItemsSerialized;
     }
-
     public Boolean addDocument(Document document) throws IOException {
         document.id = documents.size() + 1;
         documentAdded = documents.add(document);
@@ -81,13 +79,11 @@ public class BusinessService {
         xmlSerializer.serializePartner(partner, location);
         return true;
     }
-
     public Boolean exportItem(int id, String location) throws IOException {
         Item item = items.get(id);
         xmlSerializer.serializeItem(item, location);
         return true;
     }
-
     public Boolean exportDocument(int id, String location) throws IOException {
         Document document = documents.get(id);
         xmlSerializer.serializeDocument(document, location);

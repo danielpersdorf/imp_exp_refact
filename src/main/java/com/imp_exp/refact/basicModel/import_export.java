@@ -50,13 +50,13 @@ public class import_export {
             // originally like this:
             // ----- imports ------------------------------------------------------------------------------------
             // for every object type in this list
-            // String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
-            String[] tmp = { "4" };
+            String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
             for(String x : tmp) {
                 ObjNr = x;
                 Import.prepareImport();
                 // wenn ImportTrigger = J -> importieren
                 // if (IniFileHelper.ReadValue(Import.Section, Import.ImportTrigger, Import.FilePath, "") == "J")
+
                 if (importIniKeys) {
                     // foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
                     if(fileInDir) {
@@ -95,12 +95,6 @@ public class import_export {
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    //Table: ORIN - 	A/R Credit Memo , Primary Key: DocEntry, Object Type: 14
-                    case "14":
-                        ObjNr = "14";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
                     //Table: ODLN - 	Delivery Note , Primary Key: DocEntry, Object Type: 15
                     case "15":
                         ObjNr = "15";
@@ -113,52 +107,10 @@ public class import_export {
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    // Table: OPCH - PurchaseInvoice, Primary Key: DocEntry, Object Type: 18
-                    case "18":
-                        ObjNr = "18";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
-                    //Table: Purchase delivery notice  Primary Key: DocEntry, Object Type: 20
-                    case "20":
-                        ObjNr = "20";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
-                    //Table: OPOR - Purchase Order , Primary Key: DocEntry, Object Type: 22
-                    case "22":
-                        ObjNr = "22";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
-                    //Table: OQUT - Sales Quotation , Primary Key: DocEntry, Object Type: 23
-                    case "23":
-                        ObjNr = "23";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
-                    //Table: OIGN - 	Good Receipt , Primary Key: DocEntry, Object Type: 59
-                    case "59":
-                        ObjNr = "59";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
-                    //Table: OIGE - 		Goods Issue , Primary Key: DocEntry, Object Type: 60
-                    case "60":
-                        ObjNr = "60";
-                        Export.export(Int32.Parse(job.Item2));
-                        break;
-
                     //Table: OPRJ - 		Prime key: ProjectCode, Object Type: 63
                     case "63":
                         ObjNr = "63";
                         Export.exportProjekte((job.Item2));
-                        break;
-
-                    //Table: OIQR - InventoryPosting service , Primary Key: DocEntry, Object Type: 60
-                    case "10000071":
-                        ObjNr = "10000071";
-                        Export.exportInventurBuchung(Int32.Parse(job.Item2));
                         break;
                         */
                     default:
