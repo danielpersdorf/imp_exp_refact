@@ -95,6 +95,13 @@ public class Import {
             Many other types following
             {...}
             */
+            default:
+                objNr = import_export.ObjNr;
+                objTyp = "None";
+                iniSection = "Import";
+                iniTrigger = "NoTrigger";
+                iniImportPath = "AndNoPath";
+                break;
         }
     }
 
@@ -106,17 +113,14 @@ public class Import {
             //case "partner":
             case "2":
                 // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
-                //importPartner("src/main/java/com/imp_exp/refact/externalData/partner.xml");
                 importPartner(job);
                 break;
             //case "item":
             case "4":
-                // importItem("src/main/java/com/imp_exp/refact/externalData/item.xml");
                 importItem(job);
                 break;
             //case "document":
             default:
-                // importDocument("src/main/java/com/imp_exp/refact/externalData/document.xml");
                 importDocument(job);
                 break;
         }

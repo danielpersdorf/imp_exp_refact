@@ -23,6 +23,8 @@ public class BusinessService {
     private Boolean documentAdded;
     private Boolean allDocumentsSerialized;
 
+    private int nextCode;
+
 
     public BusinessService() throws IOException {
 
@@ -54,20 +56,22 @@ public class BusinessService {
 
 
     public Boolean addPartner(Partner partner) throws IOException {
-        int nextCode = partners.size() + 1;
+        nextCode = partners.size() + 1;
         Partner updatedPartner = new Partner(nextCode , partner.name);
         partnerAdded = partners.add(updatedPartner);
         allPartnersSerialized = serializer.serializeAllPartners(partners);
         return partnerAdded & allPartnersSerialized;
     }
     public Boolean addItem(Item item) throws IOException {
-        item.id = documents.size() + 1;
-        itemAdded = items.add(item);
+        nextCode = items.size();
+        Item updatedItem = new Item(nextCode, item.name);
+        itemAdded = items.add(updatedItem);
         allItemsSerialized = serializer.serializeAllItems(items);
         return itemAdded & allItemsSerialized;
     }
     public Boolean addDocument(Document document) throws IOException {
-        document.id = documents.size() + 1;
+        nextCode = documents.size() + 1;
+        document.setID(nextCode);
         documentAdded = documents.add(document);
         wrapper.documents = documents;
         allDocumentsSerialized = serializer.serializeAllDocuments(wrapper);

@@ -1,9 +1,0 @@
-<Order type="ORDER">
-  <id>4</id>
-  <name>Order</name>
-  <objType>17</objType>
-  <partner>
-    <id>0</id>
-    <name>xml partner</name>
-  </partner>
-</Order>

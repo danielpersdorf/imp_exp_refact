@@ -1,5 +1,6 @@
 package com.imp_exp.refact.tinyErpModel;
 
+
 public class Partner {
     public int id;
     public String name;

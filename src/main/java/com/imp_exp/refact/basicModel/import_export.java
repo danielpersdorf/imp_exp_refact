@@ -48,13 +48,13 @@ public class import_export {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("initialized components");
+        System.out.println("initialized components ");
         return true;
     }
 
     private static void doWork() {
 
-        System.out.println("Start working ");
+        System.out.println("imp_exp start working ");
 
         programStop = false;
 
@@ -73,7 +73,7 @@ public class import_export {
                 // wenn ImportTrigger = J -> importieren
                 // if (IniFileHelper.ReadValue(Import.Section, Import.Trigger, Import.FilePath, "") == "J")
                 if (Objects.equals(ini.get(Import.iniSection, Import.iniTrigger), "Y")) {
-                    System.out.println("found ini trigger");
+                    System.out.println("found ini trigger " + Import.iniTrigger);
 
                     // foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
                     String fullPathToFile = "src/main/java/com/imp_exp/refact/" + ini.get(Import.iniSection, Import.iniImportPath);
@@ -85,7 +85,6 @@ public class import_export {
                                     String fullPathToJob = fullPathToFile + job;
                                     System.out.println(fullPathToJob);
                                     // logger.Info("Job: " + job);
-                                    // Import.importDatei(job);
                                     Import.doImport(fullPathToJob);
                                 }
                             }
@@ -104,44 +103,45 @@ public class import_export {
             if (foundJobsOnDB) {
                 switch ("job.Item1")
                 {
-                    // Table OCRD - Customers (GP) / Primary Key: CardCode / Object Type = 2
+                    // Customers (GP) / Primary Key: CardCode / Object Type = 2
                     case "2":
                         // ObjNr = "2";
                         //Export.exportGP(job.Item2);
                         // Export.doExport();
                         break;
                     /*
-                    //Table: OITM - Items , Primary Key: ItemCode, Object Type: 4
+                    // Items , Primary Key: ItemCode, Object Type: 4
                     case "4":
                         ObjNr = "4";
                         Export.exportArtikel(job.Item2);
                         break;
 
-                    //Table: OINV - A/R Invoice, Primary Key: DocEntry, Object Type: 13
+                    // A/R Invoice, Primary Key: DocEntry, Object Type: 13
                     case "13":
                         ObjNr = "13";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    //Table: ODLN - 	Delivery Note , Primary Key: DocEntry, Object Type: 15
+                    // Delivery Note , Primary Key: DocEntry, Object Type: 15
                     case "15":
                         ObjNr = "15";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    // Table: ORDR - Order, Primary Key: DocEntry, Object Type: 17
+                    // Order, Primary Key: DocEntry, Object Type: 17
                     case "17":
                         ObjNr = "17";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    //Table: OPRJ - 		Prime key: ProjectCode, Object Type: 63
+                    // Prime key: ProjectCode, Object Type: 63
                     case "63":
                         ObjNr = "63";
                         Export.exportProjekte((job.Item2));
                         break;
                         */
                     default:
+                        break;
                 }
             }
 
