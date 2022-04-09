@@ -31,7 +31,7 @@ public abstract class Document {
 
     public void setID(int id) {
         this.id = id;
-    };
+    }
 
     public void setPositions(List<Item> items) {
         //this.items = items;

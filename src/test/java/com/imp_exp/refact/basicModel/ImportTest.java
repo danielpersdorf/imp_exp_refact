@@ -16,22 +16,25 @@ class ImportTest {
 
     @Test
     void importPartner() {
+        String job = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
         Import importer = new Import();
         importer.objNr = String.valueOf(2);
-        importer.doImports();
+        importer.doImport(job);
     }
 
     @Test
     void importItem() {
+        String job = "src/main/java/com/imp_exp/refact/externalData/items/item.xml";
         Import importer = new Import();
         importer.objNr = String.valueOf(4);
-        importer.doImports();
+        importer.doImport(job);
     }
 
     @Test
     void importDocument() {
+        String job = "src/main/java/com/imp_exp/refact/externalData/documents/document.xml";
         Import importer = new Import();
         importer.objNr = String.valueOf(17);
-        importer.doImports();
+        importer.doImport(job);
     }
 }

@@ -12,7 +12,7 @@ public class Export {
 
     public static void exportPartner() {
         System.out.println("started export of partner");
-        String location = "src/main/java/com/imp_exp/refact/externalData/partner.xml";
+        String location = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
         int id = 11;
         Boolean partnerExported = null;
         try {
@@ -27,7 +27,7 @@ public class Export {
 
     public static void exportItem() {
         System.out.println("started export of item");
-        String location = "src/main/java/com/imp_exp/refact/externalData/item.xml";
+        String location = "src/main/java/com/imp_exp/refact/externalData/items/item.xml";
         int id = 4;
         Boolean itemExported = null;
         try {
@@ -42,7 +42,7 @@ public class Export {
 
     public static void exportDocument() {
         System.out.println("started export of document");
-        String location = "src/main/java/com/imp_exp/refact/externalData/document.xml";
+        String location = "src/main/java/com/imp_exp/refact/externalData/documents/document.xml";
         int id = 3;
         Boolean documentExported = null;
         try {

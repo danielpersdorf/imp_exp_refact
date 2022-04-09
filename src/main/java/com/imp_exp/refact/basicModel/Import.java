@@ -13,6 +13,10 @@ public class Import {
 
     private static BusinessService business = import_export.business;
 
+    public static String iniSection;
+    public static String iniTrigger;
+    public static String iniImportPath;
+
     /**
      * to decide which parts of the ini to read
      */
@@ -21,20 +25,23 @@ public class Import {
             case "2":
                 objNr = import_export.ObjNr;
                 objTyp = "partner";
-                /*ImportTrigger = "ImportGeschaeftspartner";
-                ImportVerzeichnis = "ImportGeschaeftspartnerVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportGeschaeftspartnerArchiv";
+                iniSection = "Import";
+                iniTrigger = "Partner";
+                iniImportPath = "PartnerPath";
+                /*ImportVerzeichnisArchiv = "ImportGeschaeftspartnerArchiv";
                 ImportVerzeichnisFehler = "ImportGeschaeftspartnerFehler";
                 sIPF_ObTy = Convert.ToString(2);
-                sIPF_TaNa = "OCRD";*/
+                sIPF_TaNa = "OCRD";
+                */
                 break;
 
             case "4":
                 objNr = import_export.ObjNr;
                 objTyp = "item";
-                /* ImportTrigger = "ImportArtikel";
-                ImportVerzeichnis = "ImportArtikelVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportArtikelArchiv";
+                iniSection = "Import";
+                iniTrigger = "Item";
+                iniImportPath = "ItemPath";
+                /* ImportVerzeichnisArchiv = "ImportArtikelArchiv";
                 ImportVerzeichnisFehler = "ImportArtikelFehler";
                 sIPF_ObTy = Convert.ToString(4);
                 sIPF_TaNa = "OITM"; */
@@ -43,8 +50,9 @@ public class Import {
             case "17":
                 objNr = import_export.ObjNr;
                 objTyp = "Order";
-                // ImportTrigger = "ImportKundenauftrag";
-                // ImportVerzeichnis = "ImportKundenauftragVerzeichnis";
+                iniSection = "Import";
+                iniTrigger = "Order";
+                iniImportPath = "OrderPath";
                 // ImportVerzeichnisArchiv = "ImportKundenauftragVerzeichnisArchiv";
                 // ImportVerzeichnisFehler = "ImportKundenauftragVerzeichnisFehler";
                 // sIPF_ObTy = Convert.ToString(17);
@@ -53,83 +61,44 @@ public class Import {
                 //// nicht mehr aus der static DI_API.connection sondern oCompany Objekt benutzen
                 // oDoc_Type = Program.oCompany.GetBusinessObject(BoObjectTypes.oOrders);
                 break;
-            /*
+
             case "13":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Ausgangsrechnung";
-                ImportTrigger = "ImportAusgangsrechnung";
-                ImportVerzeichnis = "ImportAusgangsrechnungVerzeichnis";
+                objNr = import_export.ObjNr;
+                objTyp = "Invoice";
+                iniSection = "Import";
+                iniTrigger = "Invoice";
+                iniImportPath = "InvoicePath";
+                /*
                 ImportVerzeichnisArchiv = "ImportAusgangsrechnungVerzeichnisArchiv";
                 ImportVerzeichnisFehler = "ImportAusgangsrechnungVerzeichnisFehler";
                 sIPF_ObTy = Convert.ToString(13);
                 sIPF_TaNa = "OINV";
                 oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oInvoices);
+                */
                 break;
 
             case "15":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Lieferung";
-                ImportTrigger = "ImportLieferung";
-                ImportVerzeichnis = "ImportLieferungVerzeichnis";
+                objNr = import_export.ObjNr;
+                objTyp = "Delivery";
+                iniSection = "Import";
+                iniTrigger = "Delivery";
+                iniImportPath = "DeliveryPath";
+                /*
                 ImportVerzeichnisArchiv = "ImportLieferungVerzeichnisArchiv";
                 ImportVerzeichnisFehler = "ImportLieferungVerzeichnisFehler";
                 sIPF_ObTy = Convert.ToString(15);
                 sIPF_TaNa = "ODLN";
                 oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
-                break;
-
-            case "18":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Eingangsrechnung";
-                ImportTrigger = "ImportEingangsrechnung";
-                ImportVerzeichnis = "ImportEingangsrechnungVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportEingangsrechnungVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportEingangsrechnungVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(18);
-                sIPF_TaNa = "OPCH";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
-                break;
-
-            case "19":
-                ObjNr = Program.ObjNr;
-                ObjBez = "EingangsGutschrift";
-                ImportTrigger = "ImportEingangsGutschrift";
-                ImportVerzeichnis = "ImportEingangsGutschriftVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportEingangsGutschriftVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportEingangsGutschriftVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(19);
-                sIPF_TaNa = "ORPC";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
-                break;
-
-            case "20":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Wareneingang";
-                ImportTrigger = "ImportWareneingang";
-                ImportVerzeichnis = "ImportWareneingangVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportWareneingangVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportWareneingangVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(20);
-                sIPF_TaNa = "OPDN";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
-                break;
-
-            case "22":
-                ObjNr = Program.ObjNr;
-                ObjBez = "Bestellung";
-                ImportTrigger = "ImportBestellung";
-                ImportVerzeichnis = "ImportBestellungVerzeichnis";
-                ImportVerzeichnisArchiv = "ImportBestellungVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportBestellungVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(22);
-                sIPF_TaNa = "OPOR";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
-                break;
                 */
+                break;
+            /*
+            Many other types following
+            {...}
+            */
         }
     }
 
-    public static void doImports()  {
+    public static void doImport(String job)  {
 
         System.out.println("import started");
 
@@ -137,15 +106,18 @@ public class Import {
             //case "partner":
             case "2":
                 // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
-                importPartner("src/main/java/com/imp_exp/refact/externalData/partner.xml");
+                //importPartner("src/main/java/com/imp_exp/refact/externalData/partner.xml");
+                importPartner(job);
                 break;
             //case "item":
             case "4":
-                importItem("src/main/java/com/imp_exp/refact/externalData/item.xml");
+                // importItem("src/main/java/com/imp_exp/refact/externalData/item.xml");
+                importItem(job);
                 break;
             //case "document":
             default:
-                importDocument("src/main/java/com/imp_exp/refact/externalData/document.xml");
+                // importDocument("src/main/java/com/imp_exp/refact/externalData/document.xml");
+                importDocument(job);
                 break;
         }
     }

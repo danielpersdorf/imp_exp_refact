@@ -1,8 +1,15 @@
 package com.imp_exp.refact.basicModel;
 
 import com.imp_exp.refact.tinyErpModel.BusinessService;
+import org.ini4j.Ini;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 
 public class import_export {
@@ -11,6 +18,8 @@ public class import_export {
     private static Boolean programStop;
 
     public static BusinessService business;
+
+    public static Ini ini;
 
     public static String ObjNr;
 
@@ -24,9 +33,15 @@ public class import_export {
     }
 
     private static Boolean initComponents() {
-        // init read resourceData (ini)
+        // init read config file (ini)
+        try {
+            ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini")); // src/main/java/com/imp_exp/refact/basicModel/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // init logger
         // init programStop
+
         // init connection
         try {
             business = new BusinessService();
@@ -42,8 +57,7 @@ public class import_export {
         System.out.println("Start working ");
 
         programStop = false;
-        Boolean importIniKeys = true;
-        Boolean fileInDir = true;
+
         Boolean foundJobsOnDB = false;
 
         do {
@@ -52,18 +66,32 @@ public class import_export {
             // for every object type in this list
             String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
             for(String x : tmp) {
+
                 ObjNr = x;
                 Import.prepareImport();
-                // wenn ImportTrigger = J -> importieren
-                // if (IniFileHelper.ReadValue(Import.Section, Import.ImportTrigger, Import.FilePath, "") == "J")
 
-                if (importIniKeys) {
+                // wenn ImportTrigger = J -> importieren
+                // if (IniFileHelper.ReadValue(Import.Section, Import.Trigger, Import.FilePath, "") == "J")
+                if (Objects.equals(ini.get(Import.iniSection, Import.iniTrigger), "Y")) {
+                    System.out.println("found ini trigger");
+
                     // foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
-                    if(fileInDir) {
-                        // System.out.println(job);
-                        // logger.Info("Job: " + job);
-                        // Import.importDatei(job);
-                        Import.doImports();
+                    String fullPathToFile = "src/main/java/com/imp_exp/refact/" + ini.get(Import.iniSection, Import.iniImportPath);
+                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(fullPathToFile))) {
+                        for (Path path : stream) {
+                            if (!Files.isDirectory(path)) {
+                                String job = path.getFileName().toString();
+                                if (job.contains(".xml")) {
+                                    String fullPathToJob = fullPathToFile + job;
+                                    System.out.println(fullPathToJob);
+                                    // logger.Info("Job: " + job);
+                                    // Import.importDatei(job);
+                                    Import.doImport(fullPathToJob);
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
