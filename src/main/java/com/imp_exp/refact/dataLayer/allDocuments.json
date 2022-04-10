@@ -89,5 +89,23 @@
       "id" : 1,
       "name" : "xml partner"
     }
+  }, {
+    "type" : "ORDER",
+    "id" : 11,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 1,
+      "name" : "xml partner"
+    }
+  }, {
+    "type" : "ORDER",
+    "id" : 12,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 1,
+      "name" : "xml partner"
+    }
   } ]
 }

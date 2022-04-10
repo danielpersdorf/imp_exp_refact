@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -75,5 +79,24 @@ class ImportTest {
         int documentsCount = import_export.business.documents.size();
 
         assertEquals(documentsCountStart + 1, documentsCount);
+    }
+
+    @Test
+    void moveFileToArchive() throws IOException {
+        String filePath = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
+        String archive = "src/main/java/com/imp_exp/refact/externalData/partners/archive/";;
+        String date = "_" + LocalDateTime.now();
+        // date = date.replace(":", "_");
+
+        int positionOfExtension = filePath.lastIndexOf(".");
+        int positionOfSeperator = filePath.lastIndexOf("/");
+        String fileNameExtension = filePath.substring(positionOfExtension);
+        String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+        String archiveFileName = archive + fileName + date + fileNameExtension;
+
+        // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+        Path fileToMovePath = Paths.get(filePath);
+        Path targetPath = Paths.get(archiveFileName);
+        Files.move(fileToMovePath, targetPath);
     }
 }

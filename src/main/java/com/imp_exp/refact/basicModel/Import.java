@@ -3,6 +3,10 @@ package com.imp_exp.refact.basicModel;
 import com.imp_exp.refact.tinyErpModel.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 /** In Java static classes are not allowed here
  * */
@@ -16,6 +20,9 @@ public class Import {
     public static String iniSection;
     public static String iniTrigger;
     public static String iniImportPath;
+    public static String iniImportArchivePath;
+    public static String iniImportErrorPath;
+    public static String tableName;
 
     /**
      * to decide which parts of the ini to read
@@ -28,11 +35,10 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "Partner";
                 iniImportPath = "PartnerPath";
-                /*ImportVerzeichnisArchiv = "ImportGeschaeftspartnerArchiv";
-                ImportVerzeichnisFehler = "ImportGeschaeftspartnerFehler";
-                sIPF_ObTy = Convert.ToString(2);
-                sIPF_TaNa = "OCRD";
-                */
+                iniImportArchivePath = "PartnerArchivePath";
+                iniImportErrorPath = "PartnerErrorPath";
+                // tableName = "OCRD";
+                // TODO:: object type
                 break;
 
             case "4":
@@ -41,11 +47,10 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "Item";
                 iniImportPath = "ItemPath";
-                /* ImportVerzeichnisArchiv = "ImportArtikelArchiv";
-                ImportVerzeichnisFehler = "ImportArtikelFehler";
-                sIPF_ObTy = Convert.ToString(4);
-                sIPF_TaNa = "OITM"; */
-                // oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);*/
+                iniImportArchivePath = "ItemArchivePath";
+                iniImportErrorPath = "ItemErrorPath";
+                // tableName = "OITM";
+                // Document oDoc = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);
                 break;
             case "17":
                 objNr = import_export.ObjNr;
@@ -53,13 +58,10 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "Order";
                 iniImportPath = "OrderPath";
-                // ImportVerzeichnisArchiv = "ImportKundenauftragVerzeichnisArchiv";
-                // ImportVerzeichnisFehler = "ImportKundenauftragVerzeichnisFehler";
-                // sIPF_ObTy = Convert.ToString(17);
-                // sIPF_TaNa = "ORDR";
-                //// oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oOrders);
-                //// nicht mehr aus der static DI_API.connection sondern oCompany Objekt benutzen
-                // oDoc_Type = Program.oCompany.GetBusinessObject(BoObjectTypes.oOrders);
+                iniImportArchivePath = "OrderArchivePath";
+                iniImportErrorPath = "OrderErrorPath";
+                // tableName = "ORDR";
+                // Document oDoc = Program.oCompany.GetBusinessObject(BoObjectTypes.oOrders);
                 break;
 
             case "13":
@@ -68,13 +70,10 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "Invoice";
                 iniImportPath = "InvoicePath";
-                /*
-                ImportVerzeichnisArchiv = "ImportAusgangsrechnungVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportAusgangsrechnungVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(13);
-                sIPF_TaNa = "OINV";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oInvoices);
-                */
+                iniImportArchivePath = "InvoiceArchivePath";
+                iniImportErrorPath = "InvoiceErrorPath";
+                // tableName = "OINV";
+                // Document oDoc = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oInvoices);
                 break;
 
             case "15":
@@ -83,13 +82,10 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "Delivery";
                 iniImportPath = "DeliveryPath";
-                /*
-                ImportVerzeichnisArchiv = "ImportLieferungVerzeichnisArchiv";
-                ImportVerzeichnisFehler = "ImportLieferungVerzeichnisFehler";
-                sIPF_ObTy = Convert.ToString(15);
-                sIPF_TaNa = "ODLN";
-                oDoc_Type = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
-                */
+                iniImportArchivePath = "DeliveryArchivePath";
+                iniImportErrorPath = "DeliveryErrorPath";
+                // tableName = "ODLN";
+                // Document oDoc = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
                 break;
             /*
             Many other types following
@@ -101,6 +97,8 @@ public class Import {
                 iniSection = "Import";
                 iniTrigger = "NoTrigger";
                 iniImportPath = "AndNoPath";
+                iniImportArchivePath = "AlsoNoArchivePath";
+                iniImportErrorPath = "AndWithoutErrorPath";
                 break;
         }
     }
@@ -129,9 +127,11 @@ public class Import {
     private static void importPartner(String filePath) {
 
         // set date and path strings
-        // string archiv = IniFileHelper.ReadValue(Section, ImportVerzeichnisArchiv, FilePath, "");
-        // string fehler = IniFileHelper.ReadValue(Section, ImportVerzeichnisFehler, FilePath, "");
+        String archive = import_export.ini.get(iniSection, iniImportArchivePath);
+        String error = import_export.ini.get(iniSection, iniImportErrorPath);
+
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+        String date = "_" + LocalDateTime.now();
 
         // wenn es ein Geschäftspartner ist, der importiert werden soll, so muss ein anderes Objekt erzeugt werden.
         // BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
@@ -144,9 +144,19 @@ public class Import {
 
                 // setzeErfolgVars(psDateiPfad);
                 // setzeErfolgVarsProObjektTyp(oDocLocal);
-                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
                 // benachrichtigeUserBeiErfolg();
+
+                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String archiveFileName = archive + fileName + date + fileNameExtension;
+
                 // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(archiveFileName);
+                Files.move(fileToMovePath, targetPath);
 
                 // if (sollInboundPufferGeschriebenWerden)
                 //inboundGeschrieben = insertInbound(oDocLocal);
