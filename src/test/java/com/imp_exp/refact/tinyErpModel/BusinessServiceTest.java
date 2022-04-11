@@ -109,7 +109,8 @@ class BusinessServiceTest {
         document.setPositions(newItems);
 
         // create the list of docs
-        business.documents = new ArrayList<Document>();
+        // business.documents = new ArrayList<Document>();
+        // List already there
 
         // add the doc to documents
         business.addDocument(document);
