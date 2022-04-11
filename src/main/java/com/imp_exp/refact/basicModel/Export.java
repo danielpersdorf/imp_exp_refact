@@ -43,7 +43,7 @@ public class Export {
     public static void exportDocument() {
         System.out.println("started export of document");
         String location = "src/main/java/com/imp_exp/refact/externalData/documents/document.xml";
-        int id = 3;
+        int id = 13;
         Boolean documentExported = null;
         try {
             documentExported = business.exportDocument(id, location);
