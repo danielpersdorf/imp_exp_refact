@@ -1,5 +1,6 @@
 package com.imp_exp.refact.basicModel;
 
+import com.imp_exp.refact.ImpExpRefactApplication;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import org.ini4j.Ini;
 
@@ -24,7 +25,7 @@ public class import_export {
     public static String ObjNr;
 
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         System.out.println("Started imp_exp ");
         componentsInitialised = initComponents();
         if (componentsInitialised) {
@@ -43,11 +44,16 @@ public class import_export {
         // init programStop
 
         // init connection
-        try {
-            business = new BusinessService();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (ImpExpRefactApplication.business != null) {
+            business = ImpExpRefactApplication.business;
+        } else {
+            try {
+                business = new BusinessService();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
         System.out.println("initialized components ");
         return true;
     }

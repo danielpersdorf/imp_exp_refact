@@ -24,6 +24,8 @@ public class Import {
     public static String iniImportErrorPath;
     public static String tableName;
 
+    // public static Document oDocLocal;
+
     /**
      * to decide which parts of the ini to read
      */
@@ -175,12 +177,30 @@ public class Import {
     }
 
     private  static  void importDocument(String filePath) {
+        // set date and path strings
+        String archive = import_export.ini.get(iniSection, iniImportArchivePath);
+        String error = import_export.ini.get(iniSection, iniImportErrorPath);
+
+        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+        String date = "_" + LocalDateTime.now();
+
+        // originally like this
+        // Document oDocLocal = business.getDocumentFromXML(filePath);
+        Document oDocLocal = null;
 
         try {
-            if (business.importDocument(filePath)) {
+            // NOTE:: this must have a side effect
+            // business must memorize that oDoc too -> static oDocCompany
+            oDocLocal = business.getDocumentFromXML(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (oDocLocal.addDocumentToList()) {
                 System.out.println("document added");
                 business.showDocuments();
-
+                /*
                 // setzeErfolgVars(psDateiPfad);
                 // setzeErfolgVarsProObjektTyp(oDocLocal);
                 // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
@@ -189,7 +209,7 @@ public class Import {
 
                 // if (sollInboundPufferGeschriebenWerden)
                 //inboundGeschrieben = insertInbound(oDocLocal);
-
+                */
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
                 // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);

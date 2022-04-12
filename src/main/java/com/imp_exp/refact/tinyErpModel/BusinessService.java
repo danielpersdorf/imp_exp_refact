@@ -8,10 +8,14 @@ public class BusinessService {
 
     public List<Partner> partners;
     public List<Item> items;
-    public List<Document> documents;
+    public static List<Document> documents;
 
-    DocumentWrapper wrapper;
-    JsonSerializer serializer = new JsonSerializer();
+    public static Partner oPartnerCompany;
+    public static Item oItemCompany;
+    public static Document oDocumentCompany;
+
+    static DocumentWrapper wrapper;
+    static JsonSerializer serializer = new JsonSerializer();
     XmlSerializer xmlSerializer = new XmlSerializer();
 
     private Boolean partnerAdded;
@@ -20,10 +24,10 @@ public class BusinessService {
     private Boolean itemAdded;
     private Boolean allItemsSerialized;
 
-    private Boolean documentAdded;
-    private Boolean allDocumentsSerialized;
+    private static Boolean documentAdded;
+    private static Boolean allDocumentsSerialized;
 
-    private int nextCode;
+    private static int nextCode;
 
 
     public BusinessService() throws IOException {
@@ -69,7 +73,7 @@ public class BusinessService {
         allItemsSerialized = serializer.serializeAllItems(items);
         return itemAdded & allItemsSerialized;
     }
-    public Boolean addDocument(Document document) throws IOException {
+    public static Boolean addDocument(Document document) throws IOException {
         nextCode = documents.size() + 1;
         document.setID(nextCode);
         documentAdded = documents.add(document);
@@ -105,6 +109,15 @@ public class BusinessService {
     public Boolean importDocument(String filePath) throws IOException {
         Document document = xmlSerializer.deserializeDocument(filePath);
         return addDocument(document);
+    }
+
+    public Partner getPartnerFromXML(String filePath) throws IOException {
+        return xmlSerializer.deserializePartner(filePath);
+    }
+    public Document getDocumentFromXML(String filePath) throws IOException {
+        // must be memorized in local variable too
+        oDocumentCompany = xmlSerializer.deserializeDocument(filePath);
+        return oDocumentCompany;
     }
 }
 
