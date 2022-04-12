@@ -1,9 +1,11 @@
 package com.imp_exp.refact.basicModel;
 
 import com.imp_exp.refact.tinyErpModel.BusinessService;
+import org.ini4j.Ini;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +24,7 @@ class ImportTest {
     @BeforeAll
     static void Before() throws IOException {
         import_export.business = new BusinessService();
+        import_export.ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini"));
     }
 
     /*
@@ -42,7 +45,11 @@ class ImportTest {
         partnersCountStart = import_export.business.partners.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
         Import importer = new Import();
+
         importer.objNr = String.valueOf(2);
+        importer.iniSection = "Import";
+        importer.iniImportArchivePath = "PartnerArchivePath";
+        importer.iniImportErrorPath = "PartnerErrorPath";
 
         // act
         importer.doImport(job);
@@ -58,7 +65,11 @@ class ImportTest {
         itemsCountStart = import_export.business.items.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/items/item.xml";
         Import importer = new Import();
+
         importer.objNr = String.valueOf(4);
+        importer.iniSection = "Import";
+        importer.iniImportArchivePath = "ItemArchivePath";
+        importer.iniImportErrorPath = "ItemErrorPath";
 
         // act
         importer.doImport(job);
@@ -73,7 +84,11 @@ class ImportTest {
         documentsCountStart = import_export.business.documents.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/documents/orders/order.xml";
         Import importer = new Import();
+
         importer.objNr = String.valueOf(17);
+        importer.iniSection = "Import";
+        importer.iniImportArchivePath = "OrderArchivePath";
+        importer.iniImportErrorPath = "OrderErrorPath";
 
         importer.doImport(job);
         int documentsCount = import_export.business.documents.size();

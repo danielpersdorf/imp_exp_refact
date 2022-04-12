@@ -135,25 +135,26 @@ public class Import {
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
 
-        // wenn es ein Geschäftspartner ist, der importiert werden soll, so muss ein anderes Objekt erzeugt werden.
-        // BusinessPartners oDocLocal = DI_API_request.connection.company.GetBusinessObjectFromXML(psDateiPfad, 0);
+        // NOTE:: this must have a side effect
+        // business must memorize that oDoc too -> static oDocCompany
+        Partner oPartnerLocal = business.getPartnerFromXML(filePath);
 
         try {
+            if (oPartnerLocal.addPartnerToList()) {
 
-            if (business.importPartner(filePath)) {
+                // benachrichtigeUserBeiErfolg();
                 System.out.println("partner added");
                 business.showPartners();
 
                 // setzeErfolgVars(psDateiPfad);
                 // setzeErfolgVarsProObjektTyp(oDocLocal);
-                // benachrichtigeUserBeiErfolg();
 
-                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
                 int positionOfExtension = filePath.lastIndexOf(".");
                 int positionOfSeperator = filePath.lastIndexOf("/");
                 String fileNameExtension = filePath.substring(positionOfExtension);
                 String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String archiveFileName = archive + fileName + date + fileNameExtension;
+                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
 
                 // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
                 Path fileToMovePath = Paths.get(filePath);
@@ -165,18 +166,33 @@ public class Import {
 
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
+                business.showPartners();
+                System.out.println("partner not added");
+
+                // get error path
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
+
                 // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(errorFileName);
+                Files.move(fileToMovePath, targetPath);
+
                 // setzeFehlerVars(fehler, Datum);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             // Finally, you should release the Document Object variables
-            // partner = null;
+            oPartnerLocal = null;
         }
     }
 
-    private  static  void importDocument(String filePath) {
+    private  static  void importItem(String filePath) {
+
         // set date and path strings
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
@@ -184,61 +200,117 @@ public class Import {
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
 
-        // originally like this
-        // Document oDocLocal = business.getDocumentFromXML(filePath);
-        Document oDocLocal = null;
+        // NOTE:: this must have a side effect
+        // business must memorize that oDoc too -> static oDocCompany
+        Item oItemLocal = business.getItemFromXML(filePath);
 
         try {
-            // NOTE:: this must have a side effect
-            // business must memorize that oDoc too -> static oDocCompany
-            oDocLocal = business.getDocumentFromXML(filePath);
+            if (oItemLocal.addItemToList()) {
+
+                // benachrichtigeUserBeiErfolg();
+                System.out.println("item added");
+                business.showItems();
+
+                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
+
+                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(archiveFileName);
+                Files.move(fileToMovePath, targetPath);
+
+            } else {
+                // benachrichtigeUserImFehlerfall(psDateiPfad);
+                business.showPartners();
+                System.out.println("partner not added");
+
+                // get error path
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
+
+                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(errorFileName);
+                Files.move(fileToMovePath, targetPath);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            // Finally, you should release the Document Object variables
+            oItemLocal = null;
         }
+    }
+
+    private  static  void importDocument(String filePath) {
+
+        // set date and path strings
+        String archive = import_export.ini.get(iniSection, iniImportArchivePath);
+        String error = import_export.ini.get(iniSection, iniImportErrorPath);
+
+        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
+        String date = "_" + LocalDateTime.now();
+
+        // NOTE:: this must have a side effect
+        // business must memorize that oDoc too -> static oDocCompany
+        Document oDocLocal = business.getDocumentFromXML(filePath);
 
         try {
             if (oDocLocal.addDocumentToList()) {
+
+                // benachrichtigeUserBeiErfolg();
                 System.out.println("document added");
                 business.showDocuments();
-                /*
+
                 // setzeErfolgVars(psDateiPfad);
                 // setzeErfolgVarsProObjektTyp(oDocLocal);
-                // sIPF_Pfad = getIPF_Pfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-                // benachrichtigeUserBeiErfolg();
+
+                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
+
                 // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(archiveFileName);
+                Files.move(fileToMovePath, targetPath);
 
                 // if (sollInboundPufferGeschriebenWerden)
                 //inboundGeschrieben = insertInbound(oDocLocal);
-                */
+
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
+                business.showDocuments();
+                System.out.println("Document not added");
+
+                // get error path
+                int positionOfExtension = filePath.lastIndexOf(".");
+                int positionOfSeperator = filePath.lastIndexOf("/");
+                String fileNameExtension = filePath.substring(positionOfExtension);
+                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
+                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
+
                 // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
+                Path fileToMovePath = Paths.get(filePath);
+                Path targetPath = Paths.get(errorFileName);
+                Files.move(fileToMovePath, targetPath);
+
                 // setzeFehlerVars(fehler, Datum);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             // Finally, you should release the Document Object variables
-            // document = null;
+            oDocLocal = null;
         }
     }
 
-
-    private  static  void importItem(String filePath) {
-
-        try {
-            if (business.importItem(filePath)) {
-                System.out.println("item added");
-                business.showItems();
-
-            } else {
-                // benachrichtigeUserImFehlerfall(psDateiPfad);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // Finally, you should release the Document Object variables
-            // item = null;
-        }
-    }
 }

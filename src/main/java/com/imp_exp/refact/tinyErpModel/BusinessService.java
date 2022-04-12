@@ -6,8 +6,8 @@ import java.util.List;
 
 public class BusinessService {
 
-    public List<Partner> partners;
-    public List<Item> items;
+    public static List<Partner> partners;
+    public static List<Item> items;
     public static List<Document> documents;
 
     public static Partner oPartnerCompany;
@@ -18,11 +18,11 @@ public class BusinessService {
     static JsonSerializer serializer = new JsonSerializer();
     XmlSerializer xmlSerializer = new XmlSerializer();
 
-    private Boolean partnerAdded;
-    private Boolean allPartnersSerialized;
+    private static Boolean partnerAdded;
+    private static Boolean allPartnersSerialized;
 
-    private Boolean itemAdded;
-    private Boolean allItemsSerialized;
+    private static Boolean itemAdded;
+    private static Boolean allItemsSerialized;
 
     private static Boolean documentAdded;
     private static Boolean allDocumentsSerialized;
@@ -45,28 +45,24 @@ public class BusinessService {
         showDocuments();
     }
 
-
     public void showPartners() {
         for (Partner partner : partners) { System.out.println(partner.id + " " + partner.name); }
     }
-
     public void showItems() {
         for (Item item : items) { System.out.println(item.toString());}
     }
-
     public void showDocuments() {
         for (Document document : documents) { System.out.println(document.toString()); }
     }
 
-
-    public Boolean addPartner(Partner partner) throws IOException {
+    public static Boolean addPartner(Partner partner) throws IOException {
         nextCode = partners.size() + 1;
         Partner updatedPartner = new Partner(nextCode , partner.name);
         partnerAdded = partners.add(updatedPartner);
         allPartnersSerialized = serializer.serializeAllPartners(partners);
         return partnerAdded & allPartnersSerialized;
     }
-    public Boolean addItem(Item item) throws IOException {
+    public static Boolean addItem(Item item) throws IOException {
         nextCode = items.size();
         Item updatedItem = new Item(nextCode, item.name);
         itemAdded = items.add(updatedItem);
@@ -111,12 +107,29 @@ public class BusinessService {
         return addDocument(document);
     }
 
-    public Partner getPartnerFromXML(String filePath) throws IOException {
-        return xmlSerializer.deserializePartner(filePath);
+    public Partner getPartnerFromXML(String filePath) {
+        try {
+            oPartnerCompany = xmlSerializer.deserializePartner(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return oPartnerCompany;
     }
-    public Document getDocumentFromXML(String filePath) throws IOException {
+    public Item getItemFromXML(String filePath) {
+        try {
+            oItemCompany = xmlSerializer.deserializeItem(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return oItemCompany;
+    }
+    public Document getDocumentFromXML(String filePath) {
         // must be memorized in local variable too
-        oDocumentCompany = xmlSerializer.deserializeDocument(filePath);
+        try {
+            oDocumentCompany = xmlSerializer.deserializeDocument(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return oDocumentCompany;
     }
 }

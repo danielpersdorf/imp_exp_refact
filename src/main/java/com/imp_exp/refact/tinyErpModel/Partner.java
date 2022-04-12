@@ -1,6 +1,8 @@
 package com.imp_exp.refact.tinyErpModel;
 
 
+import java.io.IOException;
+
 public class Partner {
     public int id;
     public String name;
@@ -22,6 +24,10 @@ public class Partner {
 
     public String getName() {
         return name;
+    }
+
+    public boolean addPartnerToList() throws IOException {
+        return BusinessService.addPartner(BusinessService.oPartnerCompany);
     }
 
     @Override

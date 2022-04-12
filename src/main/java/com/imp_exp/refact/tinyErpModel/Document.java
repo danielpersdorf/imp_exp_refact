@@ -45,24 +45,18 @@ public abstract class Document {
     }
 }
 
-class Invoice extends Document {
 
+class Invoice extends Document {
     public Invoice(int id, String name, String objType, Partner partner, List<Item> items) {
         super(id, name, objType, partner, items);
     }
-
-    @Override
-    public void setID(int i) { }
 }
 
-class Delivery extends Document {
 
+class Delivery extends Document {
     public Delivery(int id, String name, String objType, Partner partner, List<Item> items) {
         super(id, name, objType, partner, items);
     }
-
-    @Override
-    public void setID(int i) { }
 }
 
 

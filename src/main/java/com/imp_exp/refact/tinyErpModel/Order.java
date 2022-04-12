@@ -22,7 +22,6 @@ public class Order extends Document {
 
     public Order() {
         super( 0, "Order", "17", new Partner(), new ArrayList<Item>());
-        // this.id = BusinessService.documents.size() + 1;
         this.id = 0;
         this.name = "Order";
         this.objType = "17";
@@ -30,8 +29,6 @@ public class Order extends Document {
         this.items = new ArrayList<Item>();
     }
 
-    //@JsonCreator
-    // public Order(@JsonProperty("partner") Partner partner) {
     public Order(Partner partner) {
         super( 1, "Order", "17", partner, new ArrayList<Item>());
         this.id = 1;
@@ -41,11 +38,8 @@ public class Order extends Document {
         this.items = new ArrayList<Item>();
     }
 
-    //@JsonCreator
-    //public Order(@JsonProperty("id") int id, @JsonProperty("partner") Partner partner) {
     public Order(int id,  Partner partner) {
         super(id, "Order", "17", partner, new ArrayList<Item>());
-        // this.id = BusinessService.documents.size() + 1;
         this.id = id;
         this.name = "Order";
         this.objType = "17";
@@ -55,7 +49,6 @@ public class Order extends Document {
 
     @JsonCreator
     public Order(@JsonProperty("id") int id, @JsonProperty("name") String name, @JsonProperty("objType") String objType, @JsonProperty("partner") Partner partner, @JsonProperty("items") List<Item> items) {
-        // public Order(int id, String name, String objType, Partner partner) {
         super(id, "Order", "17", partner, items);
         this.id = id;
         this.name = "Order";
