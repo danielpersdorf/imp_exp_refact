@@ -183,5 +183,5 @@ public class import_export {
 
     // private static void doUpdate() { System.out.println("started update"); }
     // private static void doFillUdt() { System.out.println("started fillUdt"); }
-    private static Boolean getProgramStop() { return true; }
+    private static Boolean getProgramStop() { return ini.get("Settings", "ProgramStop").equals("Y"); }
 }
