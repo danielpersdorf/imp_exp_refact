@@ -263,103 +263,37 @@ public class Import {
 
         if (import_export.ini.get("ImportSettings", "ChangePartner").equals("Y")
                 & import_export.ini.get("ImportSettings", "ChangePartnerObjectTypes").contains(objNr) ) {
-            oDocLocal.partner = new Partner("Updated on import");
 
+            // NOTE::
+            // the original had many of those,
+            // this pre-import-manipulation worked like this:
+            // * get SQL from INI (e.g. SELECT Partner_ID FROM Partner_TBL WHERE Partner_Name = '%Partner_Name_from_Program%')
+            // * get business data and replace() placeholder in SQL by current business Data (e.g. Partner_Name)
+            // * query that sql on the DB and get a resultSet
+            // * change the doc according to result
 
-
-            // get SQL from INI
-            // replace placeholder in SQL by current business Data
-            // query that sql on the DB
-            // change the doc according to result of query
-
-            // in reality this looks like this
-
-            // schreibeLogUndConsole("CardCode Ermittelung");
-
-//            Recordset rs = null;
-//
-//            // SQL zur Verarbeitung in sSQL stecken
-//            string SQL = CardCodeErmitteln;
-//
-//            //get CardCode (= ExterneKundennummer im CardCode Feld)
-//            string CardCode = Doc.CardCode;
-//
-//            // correct SQL statement
-//            SQL = SQL.Replace("%CardCode%", CardCode);
-//
-//            // richtigen CardCode (und CardName) ermitteln
-//            try
-//            {
-//                rs = DI_API.doRequest(SQL);
-//            }
-//            catch (Exception SQLex)
-//            {
-//                Program.mlogger.logger.Error("SQL Fehler: " + SQLex);
-//            }
-//
-//            // CardCode und CardName überschreiben
-//            Doc.CardCode = rs.Fields.Item(0).Value;
-//            Doc.CardName = rs.Fields.Item(1).Value;
+            // our simplified version does just:
+            System.out.println("Changing partner");
+            oDocLocal.partner = new Partner("Updated Partner");
         }
 
         if (import_export.ini.get("ImportSettings", "ChangeItem").equals("Y")
                 & import_export.ini.get("ImportSettings", "ChangeItemObjectTypes").contains(objNr) ) {
 
-            
-            // originally like this
-//            schreibeLogUndConsole("Chargennummer aus MHD ermitteln");
-//
-//            string SQL;
-//            string SQL_Artikel;
-//            string ItemCode;
-//            string ExpDate;
-//
-//            DateTime dtExpDate;
-//
-//            // SQL aus INI zur Verarbeitung in sSQL stecken
-//            SQL = ChargennummerViaMHD;
-//
-//            // for jede Zeile des oDoc
-//            for (int i = 0; i < Doc.Lines.Count; i++)
-//            {
-//                Doc.Lines.SetCurrentLine(i);
-//
-//                // get Values from XML
-//                ItemCode = Doc.Lines.ItemCode;
-//
-//                // get ExpDate (= MHD im BTNT Feld)
-//                // mussin XML in SBO Style sein -> 20211113
-//                // 2021-06-30 (ISO Format) führt zu Server Error
-//                //sExpDate = oDoc.Lines.BatchNumbers.ExpiryDate.ToString();
-//                // -> 13.11.2021 00:00:000    mit Timestamp
-//                dtExpDate = Doc.Lines.BatchNumbers.ExpiryDate;
-//                //sExpDate = dtExpDate.Date.ToString();
-//                // -> 13.11.2021 00:00:000   mit Timestamp
-//                // -> 30.06.2021 00:00:000    mit Timestamp aber 0 (.06.) noch da
-//
-//                // nur das Datum / richtig zusammen setzen
-//                //sExpDate = "" + dtExpDate.Year + "" + dtExpDate.Month + "" + dtExpDate.Day ;
-//                // -> 20211113
-//                // -> 2021630 !!! Vorsicht !!!  jetzt: fehlende 0
-//                ExpDate = "" + dtExpDate.Year + "" + dtExpDate.Month.ToString("d2") + "" + dtExpDate.Day.ToString("d2");
-//
-//                // replace Values in SQL statement
-//                SQL_Artikel = SQL.Replace("%ItemCode%", ItemCode);
-//                SQL_Artikel = SQL_Artikel.Replace("%ExpDate%", ExpDate);
-//
-//                // richtige Chargennummer ermitteln
-//                try
-//                {
-//                    rs = DI_API_request.doRequest(SQL_Artikel);
-//                }
-//                catch (Exception SQLex)
-//                {
-//                    Program.mlogger.logger.Error("SQL Fehler bei Chargennummer-Ermittlung: " + SQLex);
-//                }
-//
-//                // Chargennummer der Zeile überschreiben
-//                Doc.Lines.BatchNumbers.BatchNumber = rs.Fields.Item(0).Value;
-        //}
+            // NOTE::
+            // the original had many of those,
+            // another pre-import-manipulation worked like this:
+            // * get SQL from INI (e.g. SELECT Item_ID FROM Item_TBL WHERE Item_Property = '%Item_Property_in_question%')
+            // * for items, you need to loop through the list of items
+            // * -> get data value from the imported xml line of a certain item
+            // * replace() placeholder in SQL by that current data value (e.g. Item_Property_in_question)
+            // * query that sql on the DB and get a resultSet
+            // * change the doc according to result
+
+            // our simplified version does just:
+            System.out.println("Changing item");
+            oDocLocal.items.remove(2); 
+            oDocLocal.items.add(new Item("Updated Item"));
         }
 
         try {
