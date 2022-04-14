@@ -66,7 +66,7 @@ class BusinessServiceTest {
     }
 
     @Test
-    void test_createDocumentEntriesInDB_withoutItems() throws IOException {
+    void test_addDocumentEntriesInDB_withoutItems() throws IOException {
         // let`s create the first entries in DB (json)
         // init business
         BusinessService business = new BusinessService();
@@ -82,7 +82,7 @@ class BusinessServiceTest {
 
     // now with items on documents
     @Test
-    void test_createDocumentEntriesInDB() throws IOException {
+    void test_addDocumentEntriesInDB() throws IOException {
         // let`s create the first entries in DB (json)
         // init business
         BusinessService business = new BusinessService();

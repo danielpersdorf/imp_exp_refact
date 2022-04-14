@@ -24,7 +24,7 @@ class import_exportTest {
     @CsvSource({
             "Import,Partner,Y",
             "Import,Item,Y",
-            "Export,PartnerPath,externalData/partner/",
+            "Export,PartnerPath,externalData/partners/",
             "Export,Partner,N" })
     void test_readFromIni(String section, String key, String expected) throws IOException {
 

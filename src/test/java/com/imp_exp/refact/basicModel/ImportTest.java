@@ -10,10 +10,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 class ImportTest {
 
@@ -27,20 +28,37 @@ class ImportTest {
         import_export.ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini"));
     }
 
-    /*
-    @Test
-    void importPartner() {
-        // arrange
-        String job = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
-        Import importer = new Import();
-        importer.objNr = String.valueOf(2);
-        // act
-        importer.doImport(job);
-    }*/
+    /** to ensure files to move are there if removed by other test */
+    void help_exportPartner() throws IOException {
+        Export export = new Export();
+        export.exportPartner();
+    }
 
+    /** to ensure files to move are there if removed by other test */
+    void help_exportItem() throws IOException {
+        Export export = new Export();
+        export.exportItem();
+    }
+
+    /** to ensure files to move are there if removed by other test */
+    void help_exportOrder() throws IOException {
+        // export a order called document
+        Export export = new Export();
+        export.exportDocument();
+
+        // and move to order.xml
+        String filePath = "src/main/java/com/imp_exp/refact/externalData/documents/document.xml";
+        String targetPath = "src/main/java/com/imp_exp/refact/externalData/documents/orders/order.xml";
+
+        Path fileToMove = Paths.get(filePath);
+        Path target = Paths.get(targetPath);
+        Files.move(fileToMove, target, REPLACE_EXISTING);
+    }
 
     @Test
-    void importPartner_shouldIncreaseTotalPartners() {
+    void importPartner_shouldIncreaseTotalPartners() throws IOException {
+        help_exportPartner();
+
         // arrange
         partnersCountStart = import_export.business.partners.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
@@ -60,7 +78,10 @@ class ImportTest {
     }
 
     @Test
-    void importItem() {
+    void importItem() throws IOException {
+
+        help_exportItem();
+
         // arrange
         itemsCountStart = import_export.business.items.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/items/item.xml";
@@ -79,7 +100,10 @@ class ImportTest {
     }
 
     @Test
-    void importDocument() {
+    void importDocument() throws IOException {
+
+        help_exportOrder();
+
         // arrange
         documentsCountStart = import_export.business.documents.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/documents/orders/order.xml";
@@ -98,10 +122,13 @@ class ImportTest {
 
     @Test
     void moveFileToArchive() throws IOException {
+
+        help_exportPartner();
+
         String filePath = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
         String archive = "src/main/java/com/imp_exp/refact/externalData/partners/archive/";;
         String date = "_" + LocalDateTime.now();
-        // date = date.replace(":", "_");
+        date = date.replace(":", "-");
 
         int positionOfExtension = filePath.lastIndexOf(".");
         int positionOfSeperator = filePath.lastIndexOf("/");

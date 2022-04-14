@@ -41,34 +41,34 @@ class JsonSerializerTest {
         business.showItems();
     }
 
-    @Test
-    void test_createFirstItemEntriesInDB() throws IOException {
-
-        BusinessService business = new BusinessService();
-
-        // create list of items
-        List<Item> newItems = new ArrayList<Item>();
-        // create items
-        Item item0 = new Item(0,"Test Item 0");
-        Item item1 = new Item(1,"Test Item 1");
-        Item item2 = new Item(2,"Test Item 2");
-        Item item3 = new Item(3,"Test Item 3");
-        Item item4 = new Item(4,"Test Item 4");
-        // populate list with items
-        newItems.add(item0);
-        newItems.add(item1);
-        newItems.add(item2);
-        newItems.add(item3);
-        newItems.add(item4);
-        // create the list of items
-        business.items = new ArrayList<Item>();
-        business.items = newItems;
-
-        // serialize data
-        business.serializer.serializeAllItems(business.items);
-
-        business.showItems();
-    }
+//    @Test
+//    void test_createFirstItemEntriesInDB() throws IOException {
+//
+//        BusinessService business = new BusinessService();
+//
+//        // create list of items
+//        List<Item> newItems = new ArrayList<Item>();
+//        // create items
+//        Item item0 = new Item(0,"Test Item 0");
+//        Item item1 = new Item(1,"Test Item 1");
+//        Item item2 = new Item(2,"Test Item 2");
+//        Item item3 = new Item(3,"Test Item 3");
+//        Item item4 = new Item(4,"Test Item 4");
+//        // populate list with items
+//        newItems.add(item0);
+//        newItems.add(item1);
+//        newItems.add(item2);
+//        newItems.add(item3);
+//        newItems.add(item4);
+//        // create the list of items
+//        business.items = new ArrayList<Item>();
+//        business.items = newItems;
+//
+//        // serialize data
+//        business.serializer.serializeAllItems(business.items);
+//
+//        business.showItems();
+//    }
 
     /*@Test
     void test_deserializeDocuments() throws IOException {
@@ -110,7 +110,7 @@ class JsonSerializerTest {
         wrapper.documents.add(doc1);
         //clientClass.list.add(class2);
 
-        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments.json"), wrapper);
+        objectMapper.writeValue(new File("src/main/java/com/imp_exp/refact/dataLayer/allDocuments_test.json"), wrapper);
     }
 
     @Test

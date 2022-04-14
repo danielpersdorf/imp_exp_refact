@@ -134,6 +134,7 @@ public class Import {
 
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
+        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
@@ -199,6 +200,7 @@ public class Import {
 
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
+        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
@@ -256,6 +258,7 @@ public class Import {
 
         // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
+        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
@@ -292,7 +295,7 @@ public class Import {
 
             // our simplified version does just:
             System.out.println("Changing item");
-            oDocLocal.items.remove(2); 
+            oDocLocal.items.remove(2);
             oDocLocal.items.add(new Item("Updated Item"));
         }
 

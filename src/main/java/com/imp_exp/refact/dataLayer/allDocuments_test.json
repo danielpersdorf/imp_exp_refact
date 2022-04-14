@@ -1,0 +1,13 @@
+{
+  "documents" : [ {
+    "type" : "ORDER",
+    "id" : 1,
+    "name" : "Order",
+    "objType" : "17",
+    "partner" : {
+      "id" : 0,
+      "name" : "Customer 0"
+    },
+    "items" : [ ]
+  } ]
+}

@@ -1,0 +1,31 @@
+<Order type="ORDER">
+  <id>14</id>
+  <name>Order</name>
+  <objType>17</objType>
+  <partner>
+    <id>0</id>
+    <name>Customer 0</name>
+  </partner>
+  <items>
+    <items>
+      <id>0</id>
+      <name>Test Item 0</name>
+    </items>
+    <items>
+      <id>1</id>
+      <name>Test Item 1</name>
+    </items>
+    <items>
+      <id>2</id>
+      <name>Test Item 2</name>
+    </items>
+    <items>
+      <id>3</id>
+      <name>Test Item 3</name>
+    </items>
+    <items>
+      <id>4</id>
+      <name>Test Item 4</name>
+    </items>
+  </items>
+</Order>
