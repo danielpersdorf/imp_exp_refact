@@ -1,4 +1,4 @@
-## The Refactoring of import_export 
+# The Refactoring of import_export 
 
 In this little pet project a piece of legacy code is transformed 
 from total procedural, over a more object-oriented approach, to a modern way. 
@@ -15,12 +15,21 @@ To demonstrate certain aspects of the program, I have built a simplified model t
 I started this as a Spring project so all dependencies would already be there when we need them. 
 That`s also why we already have a JUnitTest by default. 
 
+
+## tinyErpModel
+
 For demo purposes I build in a very tiny ERP model with some behaviours the program works with. 
 Those are used trough almost all models, and it saves its data as Json files.    
+
+
+## basicModel
 
 The first basicModel shows a sketch of the program in the kind of way we found it. 
 A complete static, procedural program, wrong comments, dead code, HN, global variables, full of duplication on many layers, switch-case bubbles, 
 no way of concurrency.   
+
+
+## firstCleanup 
 
 After the first cleaning and following simple rules and principles, we had the first step. 
 Many small extracted functions.  
