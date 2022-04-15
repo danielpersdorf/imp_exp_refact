@@ -8,14 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.IOException;
 
 
-@SpringBootApplication
-public class ImpExpBasicModekApplication {
+// @SpringBootApplication
+public class ImpExpBasicModelApplication {
 
 	public static BusinessService business;
 	public static import_export imp_exp;
 
 	public static void main(String[] args) throws IOException {
-		SpringApplication.run(ImpExpBasicModekApplication.class, args);
+		SpringApplication.run(ImpExpBasicModelApplication.class, args);
 
 		// starting business
 		business = new BusinessService();

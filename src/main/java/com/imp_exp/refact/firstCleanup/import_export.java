@@ -1,6 +1,6 @@
 package com.imp_exp.refact.firstCleanup;
 
-import com.imp_exp.refact.ImpExpBasicModekApplication;
+import com.imp_exp.refact.ImpExpBasicModelApplication;
 import com.imp_exp.refact.ImpExpRefactApplication;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import org.ini4j.Ini;
@@ -45,8 +45,8 @@ public class import_export {
         // init programStop
 
         // init connection
-        if (ImpExpBasicModekApplication.business != null) {
-            business = ImpExpBasicModekApplication.business;
+        if (ImpExpBasicModelApplication.business != null) {
+            business = ImpExpBasicModelApplication.business;
         } else {
             try {
                 business = new BusinessService();
