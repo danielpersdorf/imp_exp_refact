@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 /** In Java static classes are not allowed here
  * */
 public class Import {
@@ -367,7 +369,7 @@ public class Import {
     public static void deleteOldArchiveFiles(String[] directories) {
         try {
 
-            int ArchivHalteDauer = 3;
+            int ArchivHalteDauer = parseInt(import_export.ini.get("Settings","ArchivHalteDauer"));
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime fileTime;
 
@@ -418,7 +420,7 @@ public class Import {
         {
             if (directory == "") { return; }
 
-            int ArchivHalteDauer = 3;
+            int ArchivHalteDauer = parseInt(import_export.ini.get("Settings","ArchivHalteDauer"));
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime fileTime;
 

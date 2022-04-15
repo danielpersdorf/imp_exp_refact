@@ -65,6 +65,7 @@ class BusinessServiceTest {
         business.showDocuments();
     }
 
+    /*
     @Test
     void test_addDocumentEntriesInDB_withoutItems() throws IOException {
         // let`s create the first entries in DB (json)
@@ -77,7 +78,7 @@ class BusinessServiceTest {
         // add the doc to documents
         business.addDocument(document);
         business.showDocuments();
-    }
+    } */
 
 
     // now with items on documents
