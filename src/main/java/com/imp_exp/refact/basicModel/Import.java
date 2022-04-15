@@ -2,11 +2,18 @@ package com.imp_exp.refact.basicModel;
 
 import com.imp_exp.refact.tinyErpModel.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /** In Java static classes are not allowed here
  * */
@@ -351,4 +358,104 @@ public class Import {
         }
     }
 
+
+    // TODO:: wenn die public sind sollten die vielleicht in eine globale Util Klasse
+
+    /** delete xml files from /archive
+     * checks the Directories given in the param and deletes old files if necessary
+     * The directories which you want to check for old files */
+    public static void deleteOldArchiveFiles(String[] directories) {
+        try {
+
+            int ArchivHalteDauer = 3;
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime fileTime;
+
+            List<String> deleteFiles = new ArrayList<>();
+
+            for (String dir : directories) {
+                if (dir == "") { continue; }
+
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+                    for (Path path : stream) {
+                        if (!Files.isDirectory(path)) {
+
+                            String fileName = path.toString();
+                            File file = new File(fileName);
+
+                            BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                            fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
+
+                            // check if difference between now and the age of the file is greater than
+                            // the maximum allowed age
+                            if (Duration.between(fileTime, now).toHours() >= ArchivHalteDauer) {
+                                deleteFiles.add(fileName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // finally deleting files
+            for (String file : deleteFiles) {
+                Files.delete(Paths.get(file));
+                // Program.mlogger.logger.Info("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Tage ist.");
+                System.out.println("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Stunden ist.");
+            }
+        }
+        catch (Exception ex) {
+            // Program.mlogger.logger.Info("Fehler beim loeschen einer zu alten archiv Datei : " + ex.Message);
+            System.out.println("Fehler beim loeschen einer zu alten archiv Datei : " + ex.getStackTrace());
+        }
+    }
+
+
+    /** delete xml files from /archive
+     * checks the Directories given in the param and deletes old files if necessary
+     * The directories which you want to check for old files */
+    public static void deleteOldArchiveFiles(String directory) {
+        try
+        {
+            if (directory == "") { return; }
+
+            int ArchivHalteDauer = 3;
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime fileTime;
+
+            List<String> deleteFiles = new ArrayList<>();
+
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
+                for (Path path : stream) {
+                    if (!Files.isDirectory(path)) {
+
+                        String fileName = path.toString();
+                        File file = new File(fileName);
+
+                        BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                        fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
+
+                        // check if difference between now and the age of the file is greater than
+                        // the maximum allowed age
+                        if (Duration.between(fileTime, now).toHours() >= ArchivHalteDauer) {
+                            deleteFiles.add(fileName);
+                        }
+                    }
+                }
+            }
+
+            // finally deleting files
+            for (String file : deleteFiles) {
+                Files.delete(Paths.get(file));
+                // Program.mlogger.logger.Info("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Tage ist.");
+                System.out.println("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Stunden ist.");
+            }
+        }
+        catch (Exception ex) {
+            // Program.mlogger.logger.Info("Fehler beim loeschen einer zu alten archiv Datei : " + ex.Message);
+            System.out.println("Fehler beim loeschen einer zu alten archiv Datei : " + ex.getStackTrace());
+        }
+    }
+
 }
+
+

@@ -141,4 +141,17 @@ class ImportTest {
         Path targetPath = Paths.get(archiveFileName);
         Files.move(fileToMovePath, targetPath);
     }
+
+    @Test
+    void test_deleteOldArchiveFiles_fromSingleDirectory() {
+        Import.deleteOldArchiveFiles("src/main/java/com/imp_exp/refact/externalData/partners/archive/");
+    }
+
+    @Test
+    void test_deleteOldArchiveFiles_fromMultipleDirectories() {
+        String[] directories = new String[] {
+                "src/main/java/com/imp_exp/refact/externalData/items/archive/",
+                "src/main/java/com/imp_exp/refact/externalData/documents/orders/archive/"};
+        Import.deleteOldArchiveFiles(directories);
+    }
 }
