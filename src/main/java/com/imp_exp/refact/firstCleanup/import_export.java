@@ -1,7 +1,6 @@
 package com.imp_exp.refact.firstCleanup;
 
 import com.imp_exp.refact.ImpExpBasicModelApplication;
-import com.imp_exp.refact.ImpExpRefactApplication;
 import com.imp_exp.refact.tinyErpModel.BusinessService;
 import org.ini4j.Ini;
 
@@ -35,7 +34,6 @@ public class import_export {
     }
 
     private static Boolean initComponents() {
-        // init read config file (ini)
         try {
             ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini")); // src/main/java/com/imp_exp/refact/basicModel/
         } catch (IOException e) {
@@ -44,7 +42,6 @@ public class import_export {
         // init logger
         // init programStop
 
-        // init connection
         if (ImpExpBasicModelApplication.business != null) {
             business = ImpExpBasicModelApplication.business;
         } else {
@@ -68,21 +65,17 @@ public class import_export {
         Boolean foundJobsOnDB = false;
 
         do {
-            // originally like this:
+
             // ----- imports ------------------------------------------------------------------------------------
-            // for every object type in this list
             String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
             for(String x : tmp) {
 
                 ObjNr = x;
                 Import.prepareImport();
 
-                // wenn ImportTrigger = J -> importieren
-                // if (IniFileHelper.ReadValue(Import.Section, Import.Trigger, Import.FilePath, "") == "J")
                 if (Objects.equals(ini.get(Import.iniSection, Import.iniTrigger), "Y")) {
                     System.out.println("found ini trigger " + Import.iniTrigger);
 
-                    // foreach (string job in Directory.GetFiles(IniFileHelper.ReadValue(Import.Section, Import.ImportVerzeichnis, Import.FilePath, ""), "*.xml"))
                     String fullPathToFile = "src/main/java/com/imp_exp/refact/" + ini.get(Import.iniSection, Import.iniImportPath);
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(fullPathToFile))) {
                         for (Path path : stream) {
@@ -91,7 +84,6 @@ public class import_export {
                                 if (job.contains(".xml")) {
                                     String fullPathToJob = fullPathToFile + job;
                                     System.out.println(fullPathToJob);
-                                    // logger.Info("Job: " + job);
                                     Import.doImport(fullPathToJob);
                                 }
                             }
@@ -152,36 +144,13 @@ public class import_export {
                 }
             }
 
-            // doUpdate();
-            // doFillUdt();
+            doUpdate();
+            doFillUdt();
             programStop = getProgramStop();
         } while (programStop == false);
     }
 
-    /** to import a partner */
-    // private static void doImport() {
-    // System.out.println("started import");
-    // Boolean partnerAdded = business.addPartner("Tony Stark");
-    // if (partnerAdded) { System.out.println("partner added"); }
-    // business.showPartners();
-    // }
-
-    /** to export a partner to xml  */
-    /*private static void doExport() {
-        System.out.println("started export");
-        String location = "src/main/resources/partner.xml";
-
-        XmlMapper xmlMapper = new XmlMapper();
-        try {
-            xmlMapper.writeValue(new File(location), new Partner("XML Partner"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        File file = new File(location);
-        System.out.println("exported partner to " + location);
-    }*/
-
-    // private static void doUpdate() { System.out.println("started update"); }
-    // private static void doFillUdt() { System.out.println("started fillUdt"); }
+    private static void doUpdate() { System.out.println("started update"); }
+    private static void doFillUdt() { System.out.println("started fillUdt"); }
     private static Boolean getProgramStop() { return ini.get("Settings", "ProgramStop").equals("Y"); }
 }

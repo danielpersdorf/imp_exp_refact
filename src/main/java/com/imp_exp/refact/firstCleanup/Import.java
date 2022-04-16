@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ public class Import {
     public static String iniImportErrorPath;
     public static String tableName;
 
-    // public static Document oDocLocal;
 
     /**
      * to decide which parts of the ini to read
@@ -114,21 +112,18 @@ public class Import {
         }
     }
 
-    public static void doImport(String job)  {
+    public static void doImport(String job) {
 
         System.out.println("import started");
 
         switch (objNr) {
-            //case "partner":
             case "2":
                 // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
                 importPartner(job);
                 break;
-            //case "item":
             case "4":
                 importItem(job);
                 break;
-            //case "document":
             default:
                 importDocument(job);
                 break;
@@ -141,7 +136,6 @@ public class Import {
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
 
-        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
         date = date.replace(":", "-");
 
@@ -156,10 +150,7 @@ public class Import {
                 System.out.println("partner added");
                 business.showPartners();
 
-                // setzeErfolgVars(psDateiPfad);
-                // setzeErfolgVarsProObjektTyp(oDocLocal);
-
-                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // get archive path
                 int positionOfExtension = filePath.lastIndexOf(".");
                 int positionOfSeperator = filePath.lastIndexOf("/");
                 String fileNameExtension = filePath.substring(positionOfExtension);
@@ -171,8 +162,6 @@ public class Import {
                 Path targetPath = Paths.get(archiveFileName);
                 Files.move(fileToMovePath, targetPath);
 
-                // if (sollInboundPufferGeschriebenWerden)
-                //inboundGeschrieben = insertInbound(oDocLocal);
 
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
@@ -191,7 +180,6 @@ public class Import {
                 Path targetPath = Paths.get(errorFileName);
                 Files.move(fileToMovePath, targetPath);
 
-                // setzeFehlerVars(fehler, Datum);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,7 +195,6 @@ public class Import {
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
 
-        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
         date = date.replace(":", "-");
 
@@ -222,7 +209,7 @@ public class Import {
                 System.out.println("item added");
                 business.showItems();
 
-                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // get archive path
                 int positionOfExtension = filePath.lastIndexOf(".");
                 int positionOfSeperator = filePath.lastIndexOf("/");
                 String fileNameExtension = filePath.substring(positionOfExtension);
@@ -265,7 +252,6 @@ public class Import {
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
 
-        // string Datum = "_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff");
         String date = "_" + LocalDateTime.now();
         date = date.replace(":", "-");
 
@@ -315,10 +301,7 @@ public class Import {
                 System.out.println("document added");
                 business.showDocuments();
 
-                // setzeErfolgVars(psDateiPfad);
-                // setzeErfolgVarsProObjektTyp(oDocLocal);
-
-                // sPfad = getPfad(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
+                // get archive path
                 int positionOfExtension = filePath.lastIndexOf(".");
                 int positionOfSeperator = filePath.lastIndexOf("/");
                 String fileNameExtension = filePath.substring(positionOfExtension);
@@ -329,9 +312,6 @@ public class Import {
                 Path fileToMovePath = Paths.get(filePath);
                 Path targetPath = Paths.get(archiveFileName);
                 Files.move(fileToMovePath, targetPath);
-
-                // if (sollInboundPufferGeschriebenWerden)
-                //inboundGeschrieben = insertInbound(oDocLocal);
 
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
@@ -350,7 +330,6 @@ public class Import {
                 Path targetPath = Paths.get(errorFileName);
                 Files.move(fileToMovePath, targetPath);
 
-                // setzeFehlerVars(fehler, Datum);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -367,47 +346,9 @@ public class Import {
      * checks the Directories given in the param and deletes old files if necessary
      * The directories which you want to check for old files */
     public static void deleteOldArchiveFiles(String[] directories) {
-        try {
-
-            int ArchivHalteDauer = parseInt(import_export.ini.get("Settings","ArchivHalteDauer"));
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime fileTime;
-
-            List<String> deleteFiles = new ArrayList<>();
-
-            for (String dir : directories) {
-                if (dir == "") { continue; }
-
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
-                    for (Path path : stream) {
-                        if (!Files.isDirectory(path)) {
-
-                            String fileName = path.toString();
-                            File file = new File(fileName);
-
-                            BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                            fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
-
-                            // check if difference between now and the age of the file is greater than
-                            // the maximum allowed age
-                            if (Duration.between(fileTime, now).toHours() >= ArchivHalteDauer) {
-                                deleteFiles.add(fileName);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // finally deleting files
-            for (String file : deleteFiles) {
-                Files.delete(Paths.get(file));
-                // Program.mlogger.logger.Info("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Tage ist.");
-                System.out.println("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Stunden ist.");
-            }
-        }
-        catch (Exception ex) {
-            // Program.mlogger.logger.Info("Fehler beim loeschen einer zu alten archiv Datei : " + ex.Message);
-            System.out.println("Fehler beim loeschen einer zu alten archiv Datei : " + ex.getStackTrace());
+        for (String dir : directories) {
+            if (dir == "") { continue; }
+            deleteOldArchiveFiles(dir);
         }
     }
 
@@ -416,48 +357,41 @@ public class Import {
      * checks the Directories given in the param and deletes old files if necessary
      * The directories which you want to check for old files */
     public static void deleteOldArchiveFiles(String directory) {
-        try
-        {
-            if (directory == "") { return; }
 
-            int ArchivHalteDauer = parseInt(import_export.ini.get("Settings","ArchivHalteDauer"));
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime fileTime;
+        if (directory == "") { return; }
 
-            List<String> deleteFiles = new ArrayList<>();
+        int archiveDuration = parseInt(import_export.ini.get("Settings","ArchiveDuration"));
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime fileTime;
 
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
-                for (Path path : stream) {
-                    if (!Files.isDirectory(path)) {
+        List<String> deleteFiles = new ArrayList<>();
 
-                        String fileName = path.toString();
-                        File file = new File(fileName);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
 
-                        BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                        fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
+                    String fileName = path.toString();
+                    File file = new File(fileName);
 
-                        // check if difference between now and the age of the file is greater than
-                        // the maximum allowed age
-                        if (Duration.between(fileTime, now).toHours() >= ArchivHalteDauer) {
-                            deleteFiles.add(fileName);
-                        }
+                    BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                    fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
+
+                    // check if difference between now and the age of the file is greater than the maximum allowed age
+                    if (Duration.between(fileTime, now).toHours() >= archiveDuration) {
+                        deleteFiles.add(fileName);
                     }
                 }
             }
 
-            // finally deleting files
             for (String file : deleteFiles) {
                 Files.delete(Paths.get(file));
-                // Program.mlogger.logger.Info("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Tage ist.");
-                System.out.println("Archivdatei : " + file + " wurde geloescht weil sie älter als " + ArchivHalteDauer + " Stunden ist.");
+                System.out.println("Archive-file : " + file + " has been deleted because it is older than " + archiveDuration + " hours.");
             }
         }
         catch (Exception ex) {
-            // Program.mlogger.logger.Info("Fehler beim loeschen einer zu alten archiv Datei : " + ex.Message);
-            System.out.println("Fehler beim loeschen einer zu alten archiv Datei : " + ex.getStackTrace());
+            System.out.println("Error on deleting an old file from archive : " + ex.getStackTrace());
         }
     }
-
 }
 
 
