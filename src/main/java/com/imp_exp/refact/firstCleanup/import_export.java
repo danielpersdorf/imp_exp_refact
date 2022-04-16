@@ -16,14 +16,11 @@ import java.util.Objects;
 public class import_export {
 
     private static Boolean componentsInitialised;
-    private static Boolean programStop;
+    private static Boolean foundJobsOnDB = false;
 
     public static BusinessService business;
-
     public static Ini ini;
-
-    public static String ObjNr;
-
+    public static String objNr;
 
     public static void main(String[] args) {
         System.out.println("Started imp_exp ");
@@ -34,14 +31,29 @@ public class import_export {
     }
 
     private static Boolean initComponents() {
+        Boolean iniInitialized = initIni();
+        Boolean loggerInitialized = initLogger();
+        Boolean connectionInitialized = initConnection();
+        Boolean allComponentsLoaded = allComponentsInitialized(iniInitialized, loggerInitialized, connectionInitialized);
+        if (allComponentsLoaded) {
+            System.out.println("initialized components ");
+        }
+        return allComponentsLoaded;
+    }
+    private static Boolean initIni() {
         try {
-            ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini")); // src/main/java/com/imp_exp/refact/basicModel/
+            ini = new Ini(new File("src/main/java/com/imp_exp/refact/firstCleanup/imp_exp.ini"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // init logger
-        // init programStop
-
+        System.out.println("found ini ");
+        return true;
+    }
+    private static Boolean initLogger() {
+        System.out.println("started log ");
+        return true;
+    }
+    private static Boolean initConnection() {
         if (ImpExpBasicModelApplication.business != null) {
             business = ImpExpBasicModelApplication.business;
         } else {
@@ -51,106 +63,104 @@ public class import_export {
                 e.printStackTrace();
             }
         }
-
-        System.out.println("initialized components ");
+        System.out.println("connected to business ");
         return true;
+    }
+    private static Boolean allComponentsInitialized(Boolean ini, Boolean logger, Boolean conn) {
+        return ini & logger & conn;
     }
 
     private static void doWork() {
-
         System.out.println("imp_exp start working ");
-
-        programStop = false;
-
-        Boolean foundJobsOnDB = false;
-
         do {
+            doImports();
+            doExports();
+            doUpdates();
+            doFillUdts();
+        } while (!getProgramStop());
+    }
+    private static void doImports() {
+        System.out.println("imports");
 
-            // ----- imports ------------------------------------------------------------------------------------
-            String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
-            for(String x : tmp) {
+        String[] tmp = { "2", "4", "13", "15", "17", "18", "19", "20", "22", "63" };
+        for(String x : tmp) {
 
-                ObjNr = x;
-                Import.prepareImport();
+            objNr = x;
+            Import.prepareImport();
 
-                if (Objects.equals(ini.get(Import.iniSection, Import.iniTrigger), "Y")) {
-                    System.out.println("found ini trigger " + Import.iniTrigger);
+            if (Objects.equals(ini.get(Import.iniSection, Import.iniTrigger), "Y")) {
+                System.out.println("found ini trigger " + Import.iniTrigger);
 
-                    String fullPathToFile = "src/main/java/com/imp_exp/refact/" + ini.get(Import.iniSection, Import.iniImportPath);
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(fullPathToFile))) {
-                        for (Path path : stream) {
-                            if (!Files.isDirectory(path)) {
-                                String job = path.getFileName().toString();
-                                if (job.contains(".xml")) {
-                                    String fullPathToJob = fullPathToFile + job;
-                                    System.out.println(fullPathToJob);
-                                    Import.doImport(fullPathToJob);
-                                }
+                String fullPathToFile = "src/main/java/com/imp_exp/refact/" + ini.get(Import.iniSection, Import.iniImportPath);
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(fullPathToFile))) {
+                    for (Path path : stream) {
+                        if (!Files.isDirectory(path)) {
+                            String job = path.getFileName().toString();
+                            if (job.contains(".xml")) {
+                                String fullPathToJob = fullPathToFile + job;
+                                System.out.println(fullPathToJob);
+                                Import.doImport(fullPathToJob);
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
-
-            // ----- Exports ---------------------------------------------------------------------------------
-            // get jobs from DB via BusinessService
-            // List<Tuple<string, string>> Jobs = DI_API_request.GetJobs(DI_API.connection);
-            // foreach (var job in Jobs)
-            if (foundJobsOnDB) {
-                switch ("job.Item1")
-                {
+        }
+    }
+    private static void doExports() {
+        System.out.println("exports");
+        /* get jobs from DB via BusinessService */
+        // List<Job> jobs = business.getJobsFrom(connection);
+        // for (Job job : jobs)
+        if (foundJobsOnDB) {
+            switch ("job.Item1")
+            {
+                case "2":
                     // Customers (GP) / Primary Key: CardCode / Object Type = 2
-                    case "2":
-                        // ObjNr = "2";
-                        //Export.exportGP(job.Item2);
-                        // Export.doExport();
-                        break;
+                    objNr = "2";
+                    // Export.exportPartner(job.Item2);
+                    Export.exportPartner(11);
+                    break;
                     /*
-                    // Items , Primary Key: ItemCode, Object Type: 4
                     case "4":
+                        // Items , Primary Key: ItemCode, Object Type: 4
                         ObjNr = "4";
                         Export.exportArtikel(job.Item2);
                         break;
 
-                    // A/R Invoice, Primary Key: DocEntry, Object Type: 13
                     case "13":
+                        // A/R Invoice, Primary Key: DocEntry, Object Type: 13
                         ObjNr = "13";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    // Delivery Note , Primary Key: DocEntry, Object Type: 15
                     case "15":
+                        // Delivery Note , Primary Key: DocEntry, Object Type: 15
                         ObjNr = "15";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    // Order, Primary Key: DocEntry, Object Type: 17
                     case "17":
+                        // Order, Primary Key: DocEntry, Object Type: 17
                         ObjNr = "17";
                         Export.export(Int32.Parse(job.Item2));
                         break;
 
-                    // Prime key: ProjectCode, Object Type: 63
                     case "63":
+                        // Prime key: ProjectCode, Object Type: 63
                         ObjNr = "63";
                         Export.exportProjekte((job.Item2));
                         break;
                         */
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
-
-            doUpdate();
-            doFillUdt();
-            programStop = getProgramStop();
-        } while (programStop == false);
+        }
     }
+    private static void doUpdates() { System.out.println("started update"); }
+    private static void doFillUdts() { System.out.println("started fillUdt"); }
 
-    private static void doUpdate() { System.out.println("started update"); }
-    private static void doFillUdt() { System.out.println("started fillUdt"); }
     private static Boolean getProgramStop() { return ini.get("Settings", "ProgramStop").equals("Y"); }
 }

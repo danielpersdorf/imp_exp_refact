@@ -15,20 +15,20 @@ class ExportTest {
     }
 
     @Test
-    void exportPartner() {
-        Export export = new Export();
-        export.exportPartner();
+    void exportPartner_byID() {
+        int id = 11;
+        Export.exportPartner(id);
     }
 
     @Test
-    void exportItem() {
-        Export export = new Export();
-        export.exportItem();
+    void exportItem_byID() {
+        int id = 4;
+        Export.exportItem(id);
     }
 
     @Test
-    void exportDocument() {
-        Export export = new Export();
-        export.exportDocument();
+    void exportDocument_byID() {
+        int id = 1;
+        Export.exportDocument(id);
     }
 }

@@ -16,15 +16,13 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
-/** In Java static classes are not allowed here
- * */
-public class Import {
 
-    public static String objTyp;
-    public static String objNr;
+public class Import {
 
     private static BusinessService business = import_export.business;
 
+    public static String objTyp;
+    public static String objNr;
     public static String iniSection;
     public static String iniTrigger;
     public static String iniImportPath;
@@ -33,13 +31,11 @@ public class Import {
     public static String tableName;
 
 
-    /**
-     * to decide which parts of the ini to read
-     */
+    /** to decide which parts of the ini to read */
     public static void prepareImport() {
-        switch (import_export.ObjNr) {
+        switch (import_export.objNr) {
             case "2":
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "partner";
                 iniSection = "Import";
                 iniTrigger = "Partner";
@@ -51,7 +47,7 @@ public class Import {
                 break;
 
             case "4":
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "item";
                 iniSection = "Import";
                 iniTrigger = "Item";
@@ -62,7 +58,7 @@ public class Import {
                 // Document oDoc = DI_API.connection.company.GetBusinessObject(BoObjectTypes.oItems);
                 break;
             case "17":
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "Order";
                 iniSection = "Import";
                 iniTrigger = "Order";
@@ -74,7 +70,7 @@ public class Import {
                 break;
 
             case "13":
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "Invoice";
                 iniSection = "Import";
                 iniTrigger = "Invoice";
@@ -86,7 +82,7 @@ public class Import {
                 break;
 
             case "15":
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "Delivery";
                 iniSection = "Import";
                 iniTrigger = "Delivery";
@@ -101,7 +97,7 @@ public class Import {
             {...}
             */
             default:
-                objNr = import_export.ObjNr;
+                objNr = import_export.objNr;
                 objTyp = "None";
                 iniSection = "Import";
                 iniTrigger = "NoTrigger";
@@ -164,18 +160,16 @@ public class Import {
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
 
-        // NOTE:: this must have a side effect
-        // business must memorize that oDoc too -> static oDocCompany
         Item oItemLocal = business.getItemFromXML(filePath);
 
         try {
             if (oItemLocal.addItemToList()) {
-                logImportSuccess("Item");
+                logImportSuccess(objTyp);
                 business.showItems();
                 moveXml(filePath, getTargetFileName(filePath, archive, date));
             } else {
                 business.showPartners();
-                logImportFailure("Item");
+                logImportFailure(objTyp);
                 moveXml(filePath, getTargetFileName(filePath, error, date));
             }
         } catch (IOException e) {
@@ -192,26 +186,20 @@ public class Import {
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
 
-        // NOTE:: this must have a side effect
-        // business must memorize that oDoc too -> static oDocCompany
         Document oDocLocal = business.getDocumentFromXML(filePath);
 
-        if (isChangePartnerActive()) {
-            oDocLocal = changePartnerOn(oDocLocal);
-        }
+        if (isPartnerChangeActive()) oDocLocal = changePartnerOn(oDocLocal);
 
-        if (isChangeItemActive()) {
-            oDocLocal = changeItemOn(oDocLocal);
-        }
+        if (isItemChangeActive()) oDocLocal = changeItemOn(oDocLocal);
 
         try {
             if (oDocLocal.addDocumentToList()) {
-                logImportSuccess("Document");
+                logImportSuccess(objTyp);
                 business.showDocuments();
                 moveXml(filePath, getTargetFileName(filePath, archive, date));
             } else {
                 business.showDocuments();
-                logImportFailure("Document");
+                logImportFailure(objTyp);
                 moveXml(filePath, getTargetFileName(filePath, error, date));
             }
         } catch (IOException e) {
@@ -227,7 +215,7 @@ public class Import {
         return  date.replace(":", "-");
     }
 
-    private static Boolean isChangePartnerActive() {
+    private static Boolean isPartnerChangeActive() {
         return import_export.ini.get("ImportSettings", "ChangePartner").equals("Y")
                 & import_export.ini.get("ImportSettings", "ChangePartnerObjectTypes").contains(objNr) ;
     }
@@ -247,7 +235,7 @@ public class Import {
         return docLocal;
     }
 
-    private static Boolean isChangeItemActive() {
+    private static Boolean isItemChangeActive() {
         return import_export.ini.get("ImportSettings", "ChangeItem").equals("Y")
                 & import_export.ini.get("ImportSettings", "ChangeItemObjectTypes").contains(objNr);
     }

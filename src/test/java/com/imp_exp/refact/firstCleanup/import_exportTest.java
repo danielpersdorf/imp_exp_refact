@@ -35,7 +35,7 @@ class import_exportTest {
             "Export,Partner,N" })
     void test_readFromIni(String section, String key, String expected) throws IOException {
 
-        Ini ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini"));
+        Ini ini = new Ini(new File("src/main/java/com/imp_exp/refact/firstCleanup/imp_exp.ini"));
 
         assertEquals(expected, ini.get(section, key));
     }
@@ -138,5 +138,4 @@ class import_exportTest {
             }
         }
     }
-
 }

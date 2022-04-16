@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,26 +24,26 @@ class ImportTest {
     @BeforeAll
     static void Before() throws IOException {
         import_export.business = new BusinessService();
-        import_export.ini = new Ini(new File("src/main/java/com/imp_exp/refact/basicModel/imp_exp.ini"));
+        import_export.ini = new Ini(new File("src/main/java/com/imp_exp/refact/firstCleanup/imp_exp.ini"));
     }
 
     /** to ensure files to move are there if removed by other test */
     void help_exportPartner() throws IOException {
         Export export = new Export();
-        export.exportPartner();
+        export.exportPartner(11);
     }
 
     /** to ensure files to move are there if removed by other test */
     void help_exportItem() throws IOException {
         Export export = new Export();
-        export.exportItem();
+        export.exportItem(4);
     }
 
     /** to ensure files to move are there if removed by other test */
     void help_exportOrder() throws IOException {
         // export a order called document
         Export export = new Export();
-        export.exportDocument();
+        export.exportDocument(1);
 
         // and move to order.xml
         String filePath = "src/main/java/com/imp_exp/refact/externalData/documents/document.xml";
@@ -57,14 +56,14 @@ class ImportTest {
 
     @Test
     void importPartner_shouldIncreaseTotalPartners() throws IOException {
-        help_exportPartner();
-
         // arrange
+        help_exportPartner();
         partnersCountStart = import_export.business.partners.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/partners/partner.xml";
-        Import importer = new Import();
 
+        Import importer = new Import();
         importer.objNr = String.valueOf(2);
+        importer.objTyp = "partner";
         importer.iniSection = "Import";
         importer.iniImportArchivePath = "PartnerArchivePath";
         importer.iniImportErrorPath = "PartnerErrorPath";
@@ -79,15 +78,14 @@ class ImportTest {
 
     @Test
     void importItem() throws IOException {
-
-        help_exportItem();
-
         // arrange
+        help_exportItem();
         itemsCountStart = import_export.business.items.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/items/item.xml";
-        Import importer = new Import();
 
+        Import importer = new Import();
         importer.objNr = String.valueOf(4);
+        importer.objTyp = "item";
         importer.iniSection = "Import";
         importer.iniImportArchivePath = "ItemArchivePath";
         importer.iniImportErrorPath = "ItemErrorPath";
@@ -101,19 +99,19 @@ class ImportTest {
 
     @Test
     void importDocument() throws IOException {
-
-        help_exportOrder();
-
         // arrange
+        help_exportOrder();
         documentsCountStart = import_export.business.documents.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/documents/orders/order.xml";
-        Import importer = new Import();
 
+        Import importer = new Import();
         importer.objNr = String.valueOf(17);
+        importer.objTyp = "order";
         importer.iniSection = "Import";
         importer.iniImportArchivePath = "OrderArchivePath";
         importer.iniImportErrorPath = "OrderErrorPath";
 
+        // act
         importer.doImport(job);
         int documentsCount = import_export.business.documents.size();
 
@@ -121,7 +119,7 @@ class ImportTest {
     }
 
     @Test
-    void moveFileToArchive() throws IOException {
+    void test_moveFileToArchive() throws IOException {
 
         help_exportPartner();
 
@@ -136,7 +134,6 @@ class ImportTest {
         String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
         String archiveFileName = archive + fileName + date + fileNameExtension;
 
-        // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
         Path fileToMovePath = Paths.get(filePath);
         Path targetPath = Paths.get(archiveFileName);
         Files.move(fileToMovePath, targetPath);
