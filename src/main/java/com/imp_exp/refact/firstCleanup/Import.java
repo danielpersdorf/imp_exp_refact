@@ -118,7 +118,6 @@ public class Import {
 
         switch (objNr) {
             case "2":
-                // if (IniFileHelper.ReadValue(Section, ImportTrigger, FilePath, "") == "J")
                 importPartner(job);
                 break;
             case "4":
@@ -132,12 +131,9 @@ public class Import {
 
     private static void importPartner(String filePath) {
 
-        // set date and path strings
+        String date = getDateString();
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
-
-        String date = "_" + LocalDateTime.now();
-        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
@@ -145,41 +141,14 @@ public class Import {
 
         try {
             if (oPartnerLocal.addPartnerToList()) {
-
-                // benachrichtigeUserBeiErfolg();
-                System.out.println("partner added");
+                logImportSuccess("Partner");
                 business.showPartners();
-
-                // get archive path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
-
-                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(archiveFileName);
-                Files.move(fileToMovePath, targetPath);
-
-
+                moveXml(filePath, getTargetFileName(filePath, archive, date));
             } else {
                 // benachrichtigeUserImFehlerfall(psDateiPfad);
                 business.showPartners();
-                System.out.println("partner not added");
-
-                // get error path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
-
-                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(errorFileName);
-                Files.move(fileToMovePath, targetPath);
-
+                logImportFailure("Partner");
+                moveXml(filePath, getTargetFileName(filePath, error, date));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -191,12 +160,9 @@ public class Import {
 
     private  static  void importItem(String filePath) {
 
-        // set date and path strings
+        String date = getDateString();
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
-
-        String date = "_" + LocalDateTime.now();
-        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
@@ -204,39 +170,13 @@ public class Import {
 
         try {
             if (oItemLocal.addItemToList()) {
-
-                // benachrichtigeUserBeiErfolg();
-                System.out.println("item added");
+                logImportSuccess("Item");
                 business.showItems();
-
-                // get archive path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
-
-                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(archiveFileName);
-                Files.move(fileToMovePath, targetPath);
-
+                moveXml(filePath, getTargetFileName(filePath, archive, date));
             } else {
-                // benachrichtigeUserImFehlerfall(psDateiPfad);
                 business.showPartners();
-                System.out.println("partner not added");
-
-                // get error path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
-
-                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(errorFileName);
-                Files.move(fileToMovePath, targetPath);
+                logImportFailure("Item");
+                moveXml(filePath, getTargetFileName(filePath, error, date));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -248,88 +188,31 @@ public class Import {
 
     private  static  void importDocument(String filePath) {
 
-        // set date and path strings
+        String date = getDateString();
         String archive = import_export.ini.get(iniSection, iniImportArchivePath);
         String error = import_export.ini.get(iniSection, iniImportErrorPath);
-
-        String date = "_" + LocalDateTime.now();
-        date = date.replace(":", "-");
 
         // NOTE:: this must have a side effect
         // business must memorize that oDoc too -> static oDocCompany
         Document oDocLocal = business.getDocumentFromXML(filePath);
 
-        if (import_export.ini.get("ImportSettings", "ChangePartner").equals("Y")
-                & import_export.ini.get("ImportSettings", "ChangePartnerObjectTypes").contains(objNr) ) {
-
-            // NOTE::
-            // the original had many of those,
-            // this pre-import-manipulation worked like this:
-            // * get SQL from INI (e.g. SELECT Partner_ID FROM Partner_TBL WHERE Partner_Name = '%Partner_Name_from_Program%')
-            // * get business data and replace() placeholder in SQL by current business Data (e.g. Partner_Name)
-            // * query that sql on the DB and get a resultSet
-            // * change the doc according to result
-
-            // our simplified version does just:
-            System.out.println("Changing partner");
-            oDocLocal.partner = new Partner("Updated Partner");
+        if (isChangePartnerActive()) {
+            oDocLocal = changePartnerOn(oDocLocal);
         }
 
-        if (import_export.ini.get("ImportSettings", "ChangeItem").equals("Y")
-                & import_export.ini.get("ImportSettings", "ChangeItemObjectTypes").contains(objNr) ) {
-
-            // NOTE::
-            // the original had many of those,
-            // another pre-import-manipulation worked like this:
-            // * get SQL from INI (e.g. SELECT Item_ID FROM Item_TBL WHERE Item_Property = '%Item_Property_in_question%')
-            // * for items, you need to loop through the list of items
-            // * -> get data value from the imported xml line of a certain item
-            // * replace() placeholder in SQL by that current data value (e.g. Item_Property_in_question)
-            // * query that sql on the DB and get a resultSet
-            // * change the doc according to result
-
-            // our simplified version does just:
-            System.out.println("Changing item");
-            oDocLocal.items.remove(2);
-            oDocLocal.items.add(new Item("Updated Item"));
+        if (isChangeItemActive()) {
+            oDocLocal = changeItemOn(oDocLocal);
         }
 
         try {
             if (oDocLocal.addDocumentToList()) {
-
-                // benachrichtigeUserBeiErfolg();
-                System.out.println("document added");
+                logImportSuccess("Document");
                 business.showDocuments();
-
-                // get archive path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String archiveFileName = "src/main/java/com/imp_exp/refact/" + archive + fileName + date + fileNameExtension;
-
-                // archiviereXmlDatei(psDateiPfad, archiv, Datum, oDocLocal.CardCode);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(archiveFileName);
-                Files.move(fileToMovePath, targetPath);
-
+                moveXml(filePath, getTargetFileName(filePath, archive, date));
             } else {
-                // benachrichtigeUserImFehlerfall(psDateiPfad);
                 business.showDocuments();
-                System.out.println("Document not added");
-
-                // get error path
-                int positionOfExtension = filePath.lastIndexOf(".");
-                int positionOfSeperator = filePath.lastIndexOf("/");
-                String fileNameExtension = filePath.substring(positionOfExtension);
-                String fileName = filePath.substring(positionOfSeperator + 1, positionOfExtension );
-                String errorFileName = "src/main/java/com/imp_exp/refact/" + error + fileName + date + fileNameExtension;
-
-                // schreibeDateiInFehlerverzeichnis(psDateiPfad, fehler, Datum);
-                Path fileToMovePath = Paths.get(filePath);
-                Path targetPath = Paths.get(errorFileName);
-                Files.move(fileToMovePath, targetPath);
-
+                logImportFailure("Document");
+                moveXml(filePath, getTargetFileName(filePath, error, date));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -337,6 +220,74 @@ public class Import {
             // Finally, you should release the Document Object variables
             oDocLocal = null;
         }
+    }
+
+    private static String getDateString() {
+        String date = "_" + LocalDateTime.now();
+        return  date.replace(":", "-");
+    }
+
+    private static Boolean isChangePartnerActive() {
+        return import_export.ini.get("ImportSettings", "ChangePartner").equals("Y")
+                & import_export.ini.get("ImportSettings", "ChangePartnerObjectTypes").contains(objNr) ;
+    }
+
+    private static Document changePartnerOn(Document docLocal) {
+        // NOTE::
+        // the original had many of those,
+        // this pre-import-manipulation worked like this:
+        // * get SQL from INI (e.g. SELECT Partner_ID FROM Partner_TBL WHERE Partner_Name = '%Partner_Name_from_Program%')
+        // * get business data and replace() placeholder in SQL by current business Data (e.g. Partner_Name)
+        // * query that sql on the DB and get a resultSet
+        // * change the doc according to result
+
+        // our simplified version does just:
+        System.out.println("Changing partner");
+        docLocal.partner = new Partner("Updated Partner");
+        return docLocal;
+    }
+
+    private static Boolean isChangeItemActive() {
+        return import_export.ini.get("ImportSettings", "ChangeItem").equals("Y")
+                & import_export.ini.get("ImportSettings", "ChangeItemObjectTypes").contains(objNr);
+    }
+
+    private static Document changeItemOn(Document docLocal) {
+        // NOTE::
+        // the original had many of those,
+        // another pre-import-manipulation worked like this:
+        // * get SQL from INI (e.g. SELECT Item_ID FROM Item_TBL WHERE Item_Property = '%Item_Property_in_question%')
+        // * for items, you need to loop through the list of items
+        // * -> get data value from the imported xml line of a certain item
+        // * replace() placeholder in SQL by that current data value (e.g. Item_Property_in_question)
+        // * query that sql on the DB and get a resultSet
+        // * change the doc according to result
+
+        // our simplified version does just:
+        System.out.println("Changing item");
+        docLocal.items.remove(2);
+        docLocal.items.add(new Item("Updated Item"));
+        return docLocal;
+    }
+
+    private static void logImportSuccess(String type) {
+        System.out.println(type + " added");
+    }
+    private static void logImportFailure(String type) {
+        System.out.println(type + " not added");
+    }
+
+    private static String getTargetFileName(String filePath, String target, String date) {
+        int positionOfExtension = filePath.lastIndexOf(".");
+        int positionOfSeparator = filePath.lastIndexOf("/");
+        String fileNameExtension = filePath.substring(positionOfExtension);
+        String fileName = filePath.substring(positionOfSeparator + 1, positionOfExtension );
+        return "src/main/java/com/imp_exp/refact/" + target + fileName + date + fileNameExtension;
+    }
+    private static void moveXml(String filePath, String targetFileName) throws IOException {
+        Path fileToMovePath = Paths.get(filePath);
+        Path targetPath = Paths.get(targetFileName);
+        Files.move(fileToMovePath, targetPath);
     }
 
 
@@ -351,7 +302,6 @@ public class Import {
             deleteOldArchiveFiles(dir);
         }
     }
-
 
     /** delete xml files from /archive
      * checks the Directories given in the param and deletes old files if necessary
