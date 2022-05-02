@@ -19,6 +19,7 @@ public class import_export {
     private static Boolean foundJobsOnDB = false;
 
     public static BusinessService business;
+    public static Configuration config;
     public static Ini ini;
     public static String objNr;
 
@@ -32,13 +33,15 @@ public class import_export {
 
     private static Boolean initComponents() {
         Boolean iniInitialized = initIni();
+        Boolean configInitialized = initConfig();
         Boolean loggerInitialized = initLogger();
         Boolean connectionInitialized = initConnection();
-        Boolean allComponentsLoaded = allComponentsInitialized(iniInitialized, loggerInitialized, connectionInitialized);
-        if (allComponentsLoaded) {
+
+        if (iniInitialized & configInitialized & loggerInitialized & connectionInitialized) {
             System.out.println("initialized components ");
+            return true;
         }
-        return allComponentsLoaded;
+        return false;
     }
     private static Boolean initIni() {
         try {
@@ -49,6 +52,12 @@ public class import_export {
         System.out.println("found ini ");
         return true;
     }
+
+    private static Boolean initConfig() {
+        config = new Configuration();
+        return true;
+    }
+
     private static Boolean initLogger() {
         System.out.println("started log ");
         return true;

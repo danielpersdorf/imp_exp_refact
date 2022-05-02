@@ -23,6 +23,9 @@ import static java.lang.Integer.parseInt;
 public class Import {
 
     private static BusinessService business = import_export.business;
+    private static Configuration config = import_export.config;
+
+    private static FileHandler fileHandler = new FileHandler();
 
     public static String objTyp;
     public static String objNr;
@@ -219,8 +222,7 @@ public class Import {
     }
 
     private static Boolean isPartnerChangeActive() {
-        return import_export.ini.get("ImportSettings", "ChangePartner").equals("Y")
-                & import_export.ini.get("ImportSettings", "ChangePartnerObjectTypes").contains(objNr) ;
+        return config.isPartnerChangeActive & config.partnerChangeTypes.contains(objNr);
     }
 
     private static Document changePartnerOn(Document docLocal) {
@@ -239,8 +241,7 @@ public class Import {
     }
 
     private static Boolean isItemChangeActive() {
-        return import_export.ini.get("ImportSettings", "ChangeItem").equals("Y")
-                & import_export.ini.get("ImportSettings", "ChangeItemObjectTypes").contains(objNr);
+        return config.isItemChangeActive & config.itemChangeTypes.contains(objNr);
     }
 
     private static Document changeItemOn(Document docLocal) {
