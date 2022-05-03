@@ -11,11 +11,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
 
 public class FileHandler {
 
-    Configuration config = import_export.config;
+    Configuration config;
+
+    public FileHandler() {
+        this.config = import_export.config;
+    }
+    public FileHandler(Configuration config) {
+        this.config = config;
+    }
 
     /** delete xml files from /archive
      * checks the Directories given in the param and deletes old files if necessary

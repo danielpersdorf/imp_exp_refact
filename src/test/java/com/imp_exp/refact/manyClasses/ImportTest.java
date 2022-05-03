@@ -104,7 +104,15 @@ class ImportTest {
         documentsCountStart = import_export.business.documents.size();
         String job = "src/main/java/com/imp_exp/refact/externalData/documents/orders/order.xml";
 
+        Configuration config = new Configuration();
+        config.itemChangeTypes = "17";
+        config.isItemChangeActive = true;
+        config.partnerChangeTypes = "17";
+        config.isPartnerChangeActive = true;
+
         Import importer = new Import();
+        importer.config = config;
+
         importer.objNr = String.valueOf(17);
         importer.objTyp = "order";
         importer.iniSection = "Import";
@@ -139,16 +147,5 @@ class ImportTest {
         Files.move(fileToMovePath, targetPath);
     }
 
-    @Test
-    void test_deleteOldArchiveFiles_fromSingleDirectory() {
-        com.imp_exp.refact.firstCleanup.Import.deleteOldArchiveFiles("src/main/java/com/imp_exp/refact/externalData/partners/archive/");
-    }
 
-    @Test
-    void test_deleteOldArchiveFiles_fromMultipleDirectories() {
-        String[] directories = new String[] {
-                "src/main/java/com/imp_exp/refact/externalData/items/archive/",
-                "src/main/java/com/imp_exp/refact/externalData/documents/orders/archive/"};
-        Import.deleteOldArchiveFiles(directories);
-    }
 }

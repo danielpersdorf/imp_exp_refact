@@ -5,25 +5,17 @@ import com.imp_exp.refact.tinyErpModel.Document;
 import com.imp_exp.refact.tinyErpModel.Item;
 import com.imp_exp.refact.tinyErpModel.Partner;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.Integer.parseInt;
 
 
 public class Import {
 
     private static BusinessService business = import_export.business;
-    private static Configuration config = import_export.config;
+    public static Configuration config = import_export.config;
 
     private static FileHandler fileHandler = new FileHandler();
 
@@ -280,59 +272,6 @@ public class Import {
         Path fileToMovePath = Paths.get(filePath);
         Path targetPath = Paths.get(targetFileName);
         Files.move(fileToMovePath, targetPath);
-    }
-
-
-    // TODO:: wenn die public sind sollten die vielleicht in eine globale Util Klasse
-
-    /** delete xml files from /archive
-     * checks the Directories given in the param and deletes old files if necessary
-     * The directories which you want to check for old files */
-    public static void deleteOldArchiveFiles(String[] directories) {
-        for (String dir : directories) {
-            if (dir == "") { continue; }
-            deleteOldArchiveFiles(dir);
-        }
-    }
-
-    /** delete xml files from /archive
-     * checks the Directories given in the param and deletes old files if necessary
-     * The directories which you want to check for old files */
-    public static void deleteOldArchiveFiles(String directory) {
-
-        if (directory == "") { return; }
-
-        int archiveDuration = parseInt(import_export.ini.get("Settings","ArchiveDuration"));
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime fileTime;
-
-        List<String> deleteFiles = new ArrayList<>();
-
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
-            for (Path path : stream) {
-                if (!Files.isDirectory(path)) {
-
-                    String fileName = path.toString();
-                    File file = new File(fileName);
-
-                    BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                    fileTime = LocalDateTime.parse(attr.creationTime().toString().replace("Z", ""));
-
-                    // check if difference between now and the age of the file is greater than the maximum allowed age
-                    if (Duration.between(fileTime, now).toHours() >= archiveDuration) {
-                        deleteFiles.add(fileName);
-                    }
-                }
-            }
-
-            for (String file : deleteFiles) {
-                Files.delete(Paths.get(file));
-                System.out.println("Archive-file : " + file + " has been deleted because it is older than " + archiveDuration + " hours.");
-            }
-        }
-        catch (Exception ex) {
-            System.out.println("Error on deleting an old file from archive : " + ex.getStackTrace());
-        }
     }
 }
 

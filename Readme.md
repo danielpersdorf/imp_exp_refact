@@ -39,9 +39,9 @@ After the preparation cleaning, just following simple rules and principles, we h
 * Many small extracted functions.
 * A sort of readable chunk of code.
 
-## firstStep
+## firstStep - more Classes 
 We would now start real refactoring by creating new classes and changing the way the program works in principle.
-In this step a lot of new classes were added:
+In this step extracted classes were added:
 * Configuration
 * FileHandler
 * ImportJob
